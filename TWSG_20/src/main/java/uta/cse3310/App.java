@@ -120,7 +120,15 @@ public class App extends WebSocketServer {
     
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) { 
+
+    //WordList words = new WordList("words.txt");  
+
+    //System.out.println(words.wordsFromFile()); 
+
+    WordSearchGame game = new WordSearchGame(50,50); 
+   // game.generatePuzzle();
+    game.displayPuzzle();
 
     
 
