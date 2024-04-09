@@ -38,12 +38,14 @@
 package uta.cse3310;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.ArrayList;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -62,7 +64,7 @@ import com.google.gson.GsonBuilder;
 public class App extends WebSocketServer {
 
   
-  private Vector<WordSearchGame> ActiveGames = new Vector<WordSearchGame>();
+  //private Vector<WordSearchGame> ActiveGames = new Vector<WordSearchGame>();
 
   private int GameId = 1;
 
@@ -122,15 +124,14 @@ public class App extends WebSocketServer {
 
   public static void main(String[] args) { 
 
-    //WordList words = new WordList("words.txt");  
-
-    //System.out.println(words.wordsFromFile()); 
-
-    WordSearchGame game = new WordSearchGame(50,50); 
-   // game.generatePuzzle();
-    game.displayPuzzle();
-
+    String sep = "=".repeat(50);
     
+    WordList wordList = new WordList();
+     
+    Puzzle puzzle = new Puzzle(50,50); 
+    puzzle.displayPuzzle();
+    System.out.println("\n" + sep + "\n"); 
+    wordList.displayWordList();
 
   }
 }
