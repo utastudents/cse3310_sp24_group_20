@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search Game</title>
+    <style>
+    </style>
+</head>
+<body>
+    <h1>Word Search Game</h1>
+    <div id="wordSearchContainer"></div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:9880"); 
+        socket.onopen = function(event) {
+            console.log("WebSocket connection established.");
+        };
+        socket.onmessage = function(event) {
+            const puzzleData = JSON.parse(event.data); 
+            displayPuzzle(puzzleData);
+        };
+        function displayPuzzle(puzzleData) {
+            const puzzleContainer = document.getElementById("wordSearchContainer");
+            puzzleContainer.innerHTML = ""; 
+            const puzzleGrid = puzzleData; 
+            const rows = 50;
+            const cols = 50;
+            const table = document.createElement("table");
+            for (let i = 0; i < rows; i++) {
+                const row = document.createElement("tr");
+                for (let j = 0; j < cols; j++) {
+                    const cell = document.createElement("td");
+                    cell.textContent = puzzleGrid[i][j];
+                    row.appendChild(cell);
+            }
+                table.appendChild(row);
+            }
+            puzzleContainer.appendChild(table);
+        }
+    </script>
+</body>
+</html>

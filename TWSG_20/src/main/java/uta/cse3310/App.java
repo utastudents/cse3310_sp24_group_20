@@ -64,50 +64,67 @@ import com.google.gson.GsonBuilder;
 public class App extends WebSocketServer {
 
   
-  //private Vector<WordSearchGame> ActiveGames = new Vector<WordSearchGame>();
+  private Vector<Game> activeGames = new Vector<Game>();
 
-  private int GameId = 1;
+  private int GameId = 0;
 
   private int connectionId = 0;
 
-  private Instant startTime;
+  private Instant startTime; 
+  private Puzzle puzzle;
 
+  public App(int port) { 
+     super(new InetSocketAddress(port));
 
-  public App(int port) {
+  }
+  public App(InetSocketAddress address) { 
+    super(address);
     
   }
-
-  public App(InetSocketAddress address) {
-    
-  }
-
-  public App(int port, Draft_6455 draft) {
-    
-  }
-
-  @Override
-  public void onOpen(WebSocket conn, ClientHandshake handshake) {
-
-
-  }
-
-  @Override
-  public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+  public App(int port, Draft_6455 draft) { 
+     super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
     
   }
 
   @Override
-  public void onMessage(WebSocket conn, String message) {
+  public void onOpen(WebSocket conn, ClientHandshake handshake) {   
+      System.out.println(conn + " Connected!!");
+      ServerEvent event = new ServerEvent();
+      Game game = new Game(GameId + 1); 
+      conn.setAttachment(game);
+      event.gameId = game.gameIdentifier;
+      Gson gson = new Gson(); 
+      String jsonString = gson.toJson(event);
+      broadcast(jsonString);
+      game.startGame(); 
+      char[][] puzzleGrid = game.getBoard(); 
+      String puzzleJson = gson.toJson(puzzleGrid);
+      conn.send(puzzleJson);
+      
+  }
+
+  @Override
+  public void onClose(WebSocket conn, int code, String reason, boolean remote) { 
+      System.out.println(conn + " has closed"); 
+      Game game = conn.getAttachment();
+      game = null;
+    
+  }
+
+  @Override
+  public void onMessage(WebSocket conn, String message) { 
+   
     
   }
 
   @Override
   public void onMessage(WebSocket conn, ByteBuffer message) {
-    
+      System.out.println(conn + ": " + message); 
   }
 
   @Override
-  public void onError(WebSocket conn, Exception ex) {
+  public void onError(WebSocket conn, Exception ex) { 
+       ex.printStackTrace();
     
   }
 
@@ -120,11 +137,46 @@ public class App extends WebSocketServer {
 
     return "escape";
     
-  }
+  } 
+  public static void main(String[] args) {   
+    String HttpPort = System.getenv("HTTP_PORT");
+    int port = 9080;
+    if (HttpPort!=null) {
+      port = Integer.valueOf(HttpPort);
+    }
 
-  public static void main(String[] args) { 
+    // Set up the http server
 
-    String sep = "=".repeat(50);
+    HttpServer H = new HttpServer(port, "./html");
+    H.start();
+    System.out.println("http Server started on port: " + port);
+
+    // create and start the websocket server
+
+    port = 9880;
+    String WSPort = System.getenv("WEBSOCKET_PORT");
+    if (WSPort!=null) {
+      port = Integer.valueOf(WSPort);
+    }
+
+    App A = new App(port);
+    A.setReuseAddr(true);
+    A.start();
+    System.out.println("websocket Server started on port: " + port);
+      
+         
+
+  
+
+
+    
+    
+    
+    
+    
+    
+    
+    /*String sep = "=".repeat(50);
     
     WordList wordList = new WordList();
      
@@ -132,6 +184,6 @@ public class App extends WebSocketServer {
     puzzle.displayPuzzle();
     System.out.println("\n" + sep + "\n"); 
     wordList.displayWordList();
-
+    */
   }
 }

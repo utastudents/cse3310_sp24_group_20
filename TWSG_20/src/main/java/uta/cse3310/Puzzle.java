@@ -2,7 +2,9 @@ package uta.cse3310;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Random; 
+import java.io.Serializable;
+import com.google.gson.Gson;
 
 public class Puzzle { 
     private char[][] wordSearchPuzzle; 
@@ -13,12 +15,12 @@ public class Puzzle {
     private ArrayList<String> words = wordList.getWordList();
     private Random rand = new Random(); 
 
-    public Puzzle(int rows, int columns ) {
+    public Puzzle (int rows, int columns ) {
        this.rows = rows;
        this.columns = columns; 
        this.wordSearchPuzzle = new char[rows][columns];
-       initializeBoard();
-       fillRandomLetters();
+       //initializeBoard();
+       //fillRandomLetters();
     } 
     public void initializeBoard() { 
         for(int i = 0; i < rows; i++) {
@@ -38,11 +40,14 @@ public class Puzzle {
             System.out.println();
         } 
     }
+    public char[][] getPuzzle() {
+        return wordSearchPuzzle;
+    }
     public void fillRandomLetters() { 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {  
                 if( wordSearchPuzzle[i][j] == '-') {
-                    wordSearchPuzzle[i][j] = letters[rand.nextInt(letters.length)]; 
+                    wordSearchPuzzle[i][j] = '-'; //letters[rand.nextInt(letters.length)]; 
                 }
                 
             }
@@ -101,7 +106,7 @@ public class Puzzle {
                 wordSearchPuzzle[startRow - wordLength + 1 + i][startColumn - wordLength + 1 + i] = word.charAt(i);
             }
         }
-    }
+    } 
 }
 
 
