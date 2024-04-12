@@ -42,12 +42,17 @@ public class Puzzle {
     }
     public char[][] getPuzzle() {
         return wordSearchPuzzle;
+    } 
+    public ArrayList<String> getWordList() {
+        return words;
     }
+
+    
     public void fillRandomLetters() { 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {  
                 if( wordSearchPuzzle[i][j] == '-') {
-                    wordSearchPuzzle[i][j] = '-'; //letters[rand.nextInt(letters.length)]; 
+                    wordSearchPuzzle[i][j] = letters[rand.nextInt(letters.length)]; 
                 }
                 
             }

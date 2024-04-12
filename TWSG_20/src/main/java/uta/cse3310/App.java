@@ -61,7 +61,8 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer {
+public class App extends WebSocketServer { 
+  
 
   
   private Vector<Game> activeGames = new Vector<Game>();
@@ -72,7 +73,6 @@ public class App extends WebSocketServer {
 
   private Instant startTime; 
   private Puzzle puzzle;
-
   public App(int port) { 
      super(new InetSocketAddress(port));
 
@@ -99,7 +99,13 @@ public class App extends WebSocketServer {
       game.startGame(); 
       char[][] puzzleGrid = game.getBoard(); 
       String puzzleJson = gson.toJson(puzzleGrid);
-      conn.send(puzzleJson);
+      conn.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
+      System.out.println(puzzleJson);
+      ArrayList<String> wordsFromList = game.wordList(); 
+      String wordListJson = gson.toJson(wordsFromList); 
+      conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
+      System.out.println(wordListJson);
+      
       
   }
 
@@ -112,7 +118,8 @@ public class App extends WebSocketServer {
   }
 
   @Override
-  public void onMessage(WebSocket conn, String message) { 
+  public void onMessage(WebSocket conn, String message) {  
+  
    
     
   }
