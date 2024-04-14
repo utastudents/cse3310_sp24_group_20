@@ -21,6 +21,7 @@ function displayPuzzle(puzzleData) {
     }
     puzzleContainer.appendChild(table);
 } 
+
 function displayWordList(wordListData) { 
     const wordListContainer = document.getElementById("wordListContainer");
     wordListContainer.innerHTML = ""; 
@@ -49,4 +50,20 @@ function displayWordList(wordListData) {
         ul.appendChild(row);
     }
     wordListContainer.appendChild(ul);
+} 
+
+function displayLeaderboard(leaderboardData) {
+    const leaderboardContainer = document.getElementById("leaderboardContainer");
+    leaderboardContainer.innerHTML = '';
+    if (leaderboardData && leaderboardData.players) {
+        leaderboardData.players.forEach((player, index) => {
+            const playerElement = document.createElement('p');
+            playerElement.textContent = (index + 1) + ". " + player.playerUsername + " - Score: " + player.score;
+            leaderboardContainer.appendChild(playerElement);
+        });
+    } else {
+        leaderboardContainer.textContent = "No leaderboard data available.";
+
+    }
+    
 }

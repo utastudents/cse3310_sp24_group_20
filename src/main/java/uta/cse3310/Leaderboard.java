@@ -10,9 +10,18 @@ public class Leaderboard {
 
     public Leaderboard(ArrayList<Player> players) {
         this.players = players; 
-        Collections.sort(this.players, Comparator.comparingInt(Player::getPlayerScore).reversed());
+        updateLeaderboard();
 
     } 
+
+    public void addPlayer(Player player) {
+        players.add(player); 
+        updateLeaderboard();
+    } 
+    public void updateLeaderboard() {
+        Collections.sort(this.players, Comparator.comparingInt(Player::getPlayerScore).reversed());
+
+    }
     
     @Override
     public String toString() { 
@@ -22,5 +31,6 @@ public class Leaderboard {
 
         } 
         return returnString.toString();
-    }
+    } 
+    
 }

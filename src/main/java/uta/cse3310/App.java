@@ -61,20 +61,20 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer { 
-  
+public class App extends WebSocketServer {  
 
-  
-  private Vector<Game> activeGames = new Vector<Game>();
+  // Test players for leaderboard 
 
+  ArrayList<Player> players = new ArrayList<Player>();
+  private Vector<Game> activeGames = new Vector<Game>(); 
+  private Leaderboard leaderboard;
   private int GameId = 0;
-
   private int connectionId = 0;
-
   private Instant startTime; 
   private Puzzle puzzle;
+
   public App(int port) { 
-     super(new InetSocketAddress(port));
+     super(new InetSocketAddress(port)); 
 
   }
   public App(InetSocketAddress address) { 
@@ -97,14 +97,35 @@ public class App extends WebSocketServer {
       String jsonString = gson.toJson(event);
       broadcast(jsonString);
       game.startGame(); 
+      
       char[][] puzzleGrid = game.getBoard(); 
       String puzzleJson = gson.toJson(puzzleGrid);
       conn.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
       System.out.println(puzzleJson);
+      
       ArrayList<String> wordsFromList = game.wordList(); 
       String wordListJson = gson.toJson(wordsFromList); 
       conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
-      System.out.println(wordListJson);
+      System.out.println(wordListJson); 
+
+
+
+      Player player1 = new Player("Testplayer 1", 0, 0, 0); 
+      Player player2 = new Player("Testplayer 2", 1, 0, 0);
+      Player player3 = new Player("Testplayer 3", 2, 0, 0);
+      Player player4 = new Player("Testplayer 4", 3, 0, 0); 
+
+      players.add(player1);
+      players.add(player2);
+      players.add(player3);
+      players.add(player4); 
+
+      Leaderboard leaderboard = new Leaderboard(players);
+
+      String leaderboardJson = gson.toJson(leaderboard); 
+      conn.send("{\"type\": \"leaderboard\", \"data\": " + leaderboardJson + "}"); 
+      System.out.println(leaderboardJson);
+
       
       
   }

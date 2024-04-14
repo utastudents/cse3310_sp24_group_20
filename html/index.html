@@ -13,7 +13,9 @@
     <div id="wordSearchContainer"></div> 
    
    
-    <div id="wordListContainer"></div>
+    <div id="wordListContainer"></div> 
+
+    <div id="leaderboardContainer"></div>
 
     <script>
         const socket = new WebSocket("ws://localhost:9880"); 
@@ -24,8 +26,12 @@
             const data = JSON.parse(event.data);
             if (data.type === "puzzle") {
                 displayPuzzle(data.data);
-            } else if (data.type === "wordList") {
+            } 
+            else if (data.type === "wordList") {
                 displayWordList(data.data);
+            } 
+            else if(data.type === "leaderboard") {
+                displayLeaderboard(data.data)
             }
         };
         
