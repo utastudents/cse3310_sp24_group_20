@@ -7,26 +7,25 @@ public class Player {
     private int score; 
     private int totalGamesWon; 
 
-    public Player(String playerUsername, int playerIdentifier) {
+    public Player(String playerUsername, int playerIdentifier, int score, int totalGamesWon) {
       this.playerUsername = playerUsername; 
       this.playerIdentifier = playerIdentifier; 
-      this.score = 0; 
-      this.totalGamesWon = 0;
+      this.score = score; 
+      this.totalGamesWon = totalGamesWon;
     } 
     public String getPlayerUsername() {
-      return playerUsername; 
+        return playerUsername; 
     } 
-    public int increaseScore(int pointsEarned) {
-     return score + pointsEarned; 
+    public void increaseScore(int pointsEarned) {
+        score += pointsEarned; 
     } 
     public int getPlayerScore() {
-      return score; 
+        return score; 
     } 
-    public int increaseWins(int win) {
-      return totalGamesWon + win; 
+    public void increaseWins(int win) {
+        totalGamesWon += win; 
     } 
     public int getPlayerIdentifier() {
-      return playerIdentifier;
+        return playerIdentifier;
     }
-    
 } 
