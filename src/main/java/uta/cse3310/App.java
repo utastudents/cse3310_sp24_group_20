@@ -171,17 +171,7 @@ public class App extends WebSocketServer {
     A.start();
     System.out.println("websocket Server started on port: " + port);
       
-         
-
   
-
-
-    
-    
-    
-    
-    
-    
     
     /*String sep = "=".repeat(50);
     

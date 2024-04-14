@@ -13,4 +13,10 @@ public class Scoreboard {
     public void displayScore() {
         
     }
+
+    public int getScore() {
+        return score;
+    }
+    
+    
 }
