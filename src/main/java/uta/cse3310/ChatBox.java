@@ -17,4 +17,11 @@ public class ChatBox {
     public void displayChat() {
         
     }
+
+    public List<String> getMessages() {
+        return messages;
+    }
+    
+    
+    
 }
