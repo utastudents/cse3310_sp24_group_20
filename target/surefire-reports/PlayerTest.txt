@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: PlayerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.027 s <<< FAILURE! - in PlayerTest
+testUpdateScore(PlayerTest)  Time elapsed: 0.021 s  <<< FAILURE!
+junit.framework.AssertionFailedError: expected:<150> but was:<0>
+	at PlayerTest.testUpdateScore(PlayerTest.java:41)
+
+testGetName(PlayerTest)  Time elapsed: 0.004 s  <<< FAILURE!
+junit.framework.ComparisonFailure: expected:<[TestPlayer]> but was:<[string]>
+	at PlayerTest.testGetName(PlayerTest.java:26)
+

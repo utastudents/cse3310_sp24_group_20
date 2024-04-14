@@ -11,7 +11,7 @@ public class ChatBox {
 
     } 
     public void addMessage(String msg) {
-
+        
 
     } 
     public void displayChat() {

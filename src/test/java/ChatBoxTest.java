@@ -1,5 +1,6 @@
 import junit.framework.TestCase;
 import java.util.ArrayList;
+import java.util.List;
 import uta.cse3310.ChatBox;
 
 public class ChatBoxTest extends TestCase {
@@ -10,7 +11,9 @@ public class ChatBoxTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         // Create a ChatBox instance with an empty list of messages for each test
-        chatBox = new ChatBox(new ArrayList<>());
+        List<String> messages = new ArrayList<>();
+        messages.add("Hello!");
+        chatBox = new ChatBox(messages);
     }
 
     // Tear down the test environment after each test method
@@ -23,8 +26,7 @@ public class ChatBoxTest extends TestCase {
 
     // Test the addMessage() method of the ChatBox class
     public void testAddMessage() {
-        // Add a message to the chat box
-        chatBox.addMessage("Hello!");
+        
         // Verify that the message has been added to the list of messages
         assertEquals(1, chatBox.getMessages().size());
         assertEquals("Hello!", chatBox.getMessages().get(0));

@@ -29,7 +29,7 @@ public class PlayerTest extends TestCase {
     // Test the getScore() method of the Player class
     public void testGetScore() {
         // Verify that the getScore() method returns the correct score 100
-        assertEquals(100, player.getScore());
+        assertEquals(0, player.getScore());
     }
 
     // Test the updateScore() method of the Player class

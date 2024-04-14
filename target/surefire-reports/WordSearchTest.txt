@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: WordSearchTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.003 s <<< FAILURE! - in WordSearchTest
+testGetWord(WordSearchTest)  Time elapsed: 0.001 s  <<< FAILURE!
+junit.framework.ComparisonFailure: expected:<[TEST]> but was:<[word]>
+	at WordSearchTest.testGetWord(WordSearchTest.java:26)
+
+testGetDirection(WordSearchTest)  Time elapsed: 0.001 s  <<< FAILURE!
+junit.framework.ComparisonFailure: expected:<[RIGHT]> but was:<[direction]>
+	at WordSearchTest.testGetDirection(WordSearchTest.java:41)
+
