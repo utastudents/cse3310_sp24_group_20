@@ -60,6 +60,7 @@ import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 public class App extends WebSocketServer {  
 
@@ -140,9 +141,17 @@ public class App extends WebSocketServer {
 
   @Override
   public void onMessage(WebSocket conn, String message) {  
-  
-   
-    
+  System.out.println("Received message: " + message);
+
+    Gson gson = new Gson(); 
+
+    JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+        if (jsonObject.has("type") && jsonObject.get("type").getAsString().equals("username")) {
+            String username = jsonObject.get("data").getAsString();
+            Player player = new Player(username, connectionId++, 0, 0); 
+            players.add(player);
+            conn.send("Username created: " + username);
+        } 
   }
 
   @Override
