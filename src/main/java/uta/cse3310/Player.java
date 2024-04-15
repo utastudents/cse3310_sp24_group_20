@@ -29,4 +29,14 @@ public class Player {
     public int getPlayerIdentifier() {
         return playerIdentifier;
     }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getTotalGamesWon() {
+        return totalGamesWon;
+    }
+    
+    
 } 

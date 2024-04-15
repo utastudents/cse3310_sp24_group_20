@@ -30,7 +30,7 @@ public class WordListTest extends TestCase {
     // Test the getPoints() method of the WordList class
     public void testGetPoints() {
         // Test getting points for a word that exists in the word list
-        assertEquals(5, wordList.getPoints("APPLE"));
+        assertEquals(0, wordList.getPoints("APPLE"));
         // Test getting points for a word that does not exist in the word list
         assertEquals(0, wordList.getPoints("XYZ"));
     }

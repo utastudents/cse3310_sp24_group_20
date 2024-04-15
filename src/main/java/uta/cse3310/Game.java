@@ -20,5 +20,15 @@ public class Game {
     public ArrayList<String> wordList() {
         return puzzle.getWordList();
     }
+
+    public Puzzle getPuzzle() {
+        return puzzle;
+    }
+
+    public int getGameIdentifier() {
+        return gameIdentifier;
+    }
+    
+    
     
 } 

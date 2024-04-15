@@ -1,8 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: WordListTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.028 s <<< FAILURE! - in WordListTest
-testGetPoints(WordListTest)  Time elapsed: 0.001 s  <<< FAILURE!
-junit.framework.AssertionFailedError: expected:<5> but was:<0>
-	at WordListTest.testGetPoints(WordListTest.java:33)
-
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in WordListTest

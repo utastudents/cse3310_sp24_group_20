@@ -12,7 +12,7 @@ public class Puzzle {
     private int columns; 
     private char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray(); 
     private WordList wordList = new WordList();
-    private ArrayList<String> words = wordList.getWordList();
+    public ArrayList<String> words = wordList.getWordList();
     private Random rand = new Random(); 
 
     public Puzzle (int rows, int columns ) {
@@ -32,6 +32,9 @@ public class Puzzle {
             placeWord(word.toUpperCase());
         }
     } 
+    
+    
+    
     public void displayPuzzle() {
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {

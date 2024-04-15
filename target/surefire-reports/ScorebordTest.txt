@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------------
 Test set: ScorebordTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.015 s <<< FAILURE! - in ScorebordTest
-testDisplayScore(ScorebordTest)  Time elapsed: 0.004 s  <<< FAILURE!
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.004 s <<< FAILURE! - in ScorebordTest
+testDisplayScore(ScorebordTest)  Time elapsed: 0 s  <<< FAILURE!
 junit.framework.ComparisonFailure: 
 expected:<[Score: 0
 ]> but was:<[]>
 	at ScorebordTest.testDisplayScore(ScorebordTest.java:44)
 
-testUpdateScore(ScorebordTest)  Time elapsed: 0.001 s  <<< FAILURE!
+testUpdateScore(ScorebordTest)  Time elapsed: 0.003 s  <<< FAILURE!
 junit.framework.AssertionFailedError: expected:<50> but was:<0>
 	at ScorebordTest.testUpdateScore(ScorebordTest.java:36)
 

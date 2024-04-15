@@ -1,43 +1,54 @@
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import uta.cse3310.Player;
 
-public class PlayerTest extends TestCase {
-    private Player player;
+public class PlayerTest {
 
-    // Set up the test environment before each test method
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Test
+    public void testGetPlayerUsername() {
+        String username = "testUser";
+        Player player = new Player(username, 1, 0, 0);
         
-        // Create a Player instance with a name "TestPlayer" and an initial score of 100 for each test
-        player = new Player("TestPlayer", 100);
+        // Check if the player's username is set correctly
+        assertEquals(username, player.getPlayerUsername());
     }
-
-    // Tear down the test environment after each test method
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    
+    @Test
+    public void testIncreaseScore() {
+        Player player = new Player("testUser", 1, 0, 0);
         
-        // Clean up the Player instance to ensure test independence
-        player = null;
-    }
-
-    // Test the getName() method of the Player class
-    public void testGetName() {
-        // Verify that the getName() method returns the correct name "TestPlayer"
-        assertEquals("TestPlayer", player.getName());
-    }
-
-    // Test the getScore() method of the Player class
-    public void testGetScore() {
-        // Verify that the getScore() method returns the correct score 100
-        assertEquals(0, player.getScore());
-    }
-
-    // Test the updateScore() method of the Player class
-    public void testUpdateScore() {
-        // Update the player's score by adding 50
-        player.updateScore(50);
+        // Increase the player's score by 10 points
+        player.increaseScore(10);
         
-        // Verify that the score has been updated to 150
-        assertEquals(150, player.getScore());
+        // Check if the player's score is incremented correctly
+        assertEquals(10, player.getPlayerScore());
+    }
+    
+    @Test
+    public void testGetPlayerScore() {
+        Player player = new Player("testUser", 1, 100, 0);
+        
+        // Check if the player's score is retrieved correctly
+        assertEquals(100, player.getPlayerScore());
+    }
+    
+    @Test
+    public void testIncreaseWins() {
+        Player player = new Player("testUser", 1, 0, 0);
+        
+        // Increase the player's total wins by 1
+        player.increaseWins(1);
+        
+        // Check if the player's total wins is incremented correctly
+        assertEquals(1, player.getTotalGamesWon());
+    }
+    
+    @Test
+    public void testGetPlayerIdentifier() {
+        int identifier = 1;
+        Player player = new Player("testUser", identifier, 0, 0);
+        
+        // Check if the player's identifier is retrieved correctly
+        assertEquals(identifier, player.getPlayerIdentifier());
     }
 }

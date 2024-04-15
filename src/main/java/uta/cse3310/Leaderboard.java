@@ -32,5 +32,9 @@ public class Leaderboard {
         } 
         return returnString.toString();
     } 
+
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
     
 }

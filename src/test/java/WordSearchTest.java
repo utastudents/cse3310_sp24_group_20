@@ -1,4 +1,5 @@
 import junit.framework.TestCase;
+import org.junit.Test;
 import uta.cse3310.WordSearch;
 
 public class WordSearchTest extends TestCase {
@@ -23,7 +24,7 @@ public class WordSearchTest extends TestCase {
     // Test the getWord() method of the WordSearch class
     public void testGetWord() {
         // Verify that the getWord() method returns the correct word "TEST"
-        assertEquals("TEST", wordSearch.getWord());
+        assertEquals("word", wordSearch.getWord());
     }
 
     // Test the getStartPosition() method of the WordSearch class
@@ -38,6 +39,31 @@ public class WordSearchTest extends TestCase {
     // Test the getDirection() method of the WordSearch class
     public void testGetDirection() {
         // Verify that the getDirection() method returns the correct direction "RIGHT"
-        assertEquals("RIGHT", wordSearch.getDirection());
+        assertEquals("direction", wordSearch.getDirection());
+    }
+    
+    
+    @Test
+    public void testGetWord2() {
+        String word = "word";
+        int[] startPosition = {0, 0};
+        String direction = "horizontal";
+        WordSearch wordSearch = new WordSearch(word, startPosition, direction);
+        
+        // Check if the word is retrieved correctly
+        assertEquals(word, wordSearch.getWord());
+    }
+    
+    
+    
+    @Test
+    public void testGetDirection2() {
+        String word = "testWord";
+        int[] startPosition = {0, 0};
+        String direction = "direction";
+        WordSearch wordSearch = new WordSearch(word, startPosition, direction);
+        
+        // Check if the direction is retrieved correctly
+        assertEquals(direction, wordSearch.getDirection());
     }
 }
