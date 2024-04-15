@@ -8,6 +8,8 @@
 #wordListContainer { 
     border: 2px solid black;
     padding: 10px;
+
+
 }
 .imagecentre{
     display: block;
@@ -15,7 +17,20 @@
   margin-right: auto;
   width: 100%;
 }
+.ListWords{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  margin-bottom: 20px;
+    
+}
 
+.Leaderboardscore{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  margin-top: 20px;  
+}
 .container {
     max-width: 400px;
     margin: 50px auto;
@@ -41,4 +56,6 @@ button:hover {
 #activeUsers {
     margin-top: 50px;
 }
+
+
 
