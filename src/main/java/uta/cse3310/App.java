@@ -46,6 +46,11 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
@@ -65,7 +70,7 @@ import com.google.gson.JsonObject;
 public class App extends WebSocketServer {  
 
   // Test players for leaderboard 
-
+  Set<Player> activeUsers = new HashSet<>();
   ArrayList<Player> players = new ArrayList<Player>();
   private Vector<Game> activeGames = new Vector<Game>(); 
   private Leaderboard leaderboard;
@@ -148,10 +153,44 @@ public class App extends WebSocketServer {
     JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
         if (jsonObject.has("type") && jsonObject.get("type").getAsString().equals("username")) {
             String username = jsonObject.get("data").getAsString();
+            handleLogin(conn, username);
             Player player = new Player(username, connectionId++, 0, 0); 
-            players.add(player);
+             players.add(player);
             conn.send("Username created: " + username);
-        } 
+        }      
+  }
+  
+  private void handleLogin(WebSocket conn, String username) {
+    if (!isUsernameTaken(username)) {
+      Player player = new Player(username);
+      activeUsers.add(player);
+      broadcastActiveUsers();
+      Gson gson = new Gson();
+      conn.send(gson.toJson(new Message("loginSuccess", "Login successful.")));
+    } else {
+      Gson gson = new Gson();
+      conn.send(gson.toJson(new Message("loginFailure", "Username already taken.")));
+    }
+  }
+  private boolean isUsernameTaken(String username) {
+
+    for (Player player : activeUsers) {
+      if (player.getPlayerUsername().equals(username)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Broadcast active users to all clients
+  private void broadcastActiveUsers() {
+    List<String> activeUsernames = new ArrayList<>();
+    Gson gson = new Gson();
+    for (Player player : activeUsers) {
+      activeUsernames.add(player.getPlayerUsername());
+    }
+    Message message = new Message("activeUsersUpdate", activeUsernames);
+    broadcast(gson.toJson(message));
   }
 
   @Override

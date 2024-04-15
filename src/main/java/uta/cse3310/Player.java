@@ -14,6 +14,14 @@ public class Player {
       this.score = score; 
       this.totalGamesWon = totalGamesWon;
     } 
+    public Player(String playerUsername) {
+        this.playerUsername = playerUsername;
+        // Assign default values to other fields
+        this.playerIdentifier = 0;
+        this.score = 0;
+        this.totalGamesWon = 0;
+    }
+
     public String getPlayerUsername() {
         return playerUsername; 
     } 

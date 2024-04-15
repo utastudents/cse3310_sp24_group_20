@@ -10,6 +10,8 @@ import net.freeutils.httpserver.HTTPServer.FileContextHandler;
 import net.freeutils.httpserver.HTTPServer.Request;
 import net.freeutils.httpserver.HTTPServer.Response;
 import net.freeutils.httpserver.HTTPServer.VirtualHost;
+import java.util.HashSet;
+import java.util.Set;
 
 // http server include is a GPL licensed package from
 //            http://www.freeutils.net/source/jlhttp/
@@ -19,6 +21,7 @@ public class HttpServer {
     private static final String HTML = "./html";
     int port = 8080;
     String dirname = HTML;
+    private Set<Player> activeUsers = new HashSet<>();
 
     public HttpServer(int portNum, String dirName) {
         port = portNum;
@@ -43,6 +46,25 @@ public class HttpServer {
                     return 0;
                 }
             });
+
+            host.addContext("/active-users", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    StringBuilder activeUserNames = new StringBuilder();
+                    for (Player player : activeUsers) {
+                        activeUserNames.append(player.getPlayerUsername()).append(", ");
+                    }
+                    // Remove the trailing comma and space
+                    if (activeUserNames.length() > 0) {
+                        activeUserNames.setLength(activeUserNames.length() - 2);
+                    }
+                    resp.getHeaders().add("Content-Type", "text/plain");
+                    resp.send(200, "Active Users: " + activeUserNames);
+                    return 0;
+                }
+            });
+
+
+
             server.start();
         } catch (Exception e) {
             System.err.println("error: " + e);
