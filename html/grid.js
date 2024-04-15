@@ -67,9 +67,4 @@ function displayLeaderboard(leaderboardData) {
     }
     
 } 
-function submitUsername() {
-    const username = document.getElementById("username").value;
-    socket.send(JSON.stringify({ type: "username", data: username }));
-    document.getElementById("username").value = ""; 
-    //console.log(username);
-}
+
