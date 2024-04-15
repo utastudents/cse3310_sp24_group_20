@@ -9,4 +9,26 @@
     border: 2px solid black;
     padding: 10px;
 }
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
    
