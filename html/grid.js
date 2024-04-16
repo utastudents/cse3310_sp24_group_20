@@ -40,6 +40,8 @@ function displayPuzzle(puzzleData) {
     submitButton.addEventListener('click', function() {
         const word = selectedCells.map(cell => cell.textContent).join('');
         sendWordToJava(word);
+        selectedCells.forEach(cell => cell.style.backgroundColor = "");
+        selectedCells = [];
     });
     puzzleContainer.appendChild(submitButton);
 }

@@ -132,8 +132,6 @@ public class App extends WebSocketServer {
       conn.send("{\"type\": \"leaderboard\", \"data\": " + leaderboardJson + "}"); 
       System.out.println(leaderboardJson);
 
-      
-      
   }
 
   @Override
@@ -160,10 +158,8 @@ public class App extends WebSocketServer {
         }
         else if(jsonObject.has("type") && jsonObject.get("type").getAsString().equals("wordCheck")) {
             String word = jsonObject.get("word").getAsString(); 
-            System.out.println(word.toLowerCase()); 
-           game.checkForWord(word);
-
-           
+            System.out.println(word); 
+            game.checkForWord(word.toLowerCase());
         }      
   }
   

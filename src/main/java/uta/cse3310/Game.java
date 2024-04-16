@@ -33,17 +33,13 @@ public class Game {
         ArrayList<String> wordsFromList = puzzle.getWordList();  
 
         for(String word : wordsFromList ) {
-            if(word == userWord) {
+            if(word.equals(userWord)) {
                 System.out.println("Word is in the wordlist");
                 return true; 
             }
-            else if(word != userWord) { 
-                System.out.println("Word is not the wordlist");
-                return false;
-            } 
-        }
-
-        return true;
+        } 
+         System.out.println("Word is not the wordlist");
+        return false;
     }
     
     
