@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Game { 
     private Puzzle puzzle = new Puzzle(50,50); 
+
     int gameIdentifier; 
 
 
@@ -27,8 +28,24 @@ public class Game {
 
     public int getGameIdentifier() {
         return gameIdentifier;
+    } 
+    boolean checkForWord(String userWord) { 
+        ArrayList<String> wordsFromList = puzzle.getWordList();  
+
+        for(String word : wordsFromList ) {
+            if(word == userWord) {
+                System.out.println("Word is in the wordlist");
+                return true; 
+            }
+            else if(word != userWord) { 
+                System.out.println("Word is not the wordlist");
+                return false;
+            } 
+        }
+
+        return true;
     }
     
     
     
-} 
+}

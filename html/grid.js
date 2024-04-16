@@ -1,26 +1,53 @@
+ // This section of code will display the table from code aswell as create the buttons for each cell.
 function displayPuzzle(puzzleData) {
     const puzzleContainer = document.getElementById("wordSearchContainer");
-    puzzleContainer.innerHTML = ""; 
-    const puzzleGrid = puzzleData; 
+    puzzleContainer.innerHTML = "";
+    const puzzleGrid = puzzleData;
     const rows = 50;
     const cols = 50;
-    const table = document.createElement("table"); 
-    table.style.borderCollapse = "collapse"; 
+    const table = document.createElement("table");
+    table.style.borderCollapse = "collapse";
+    let selectedCells = []; 
     for (let i = 0; i < rows; i++) {
         const row = document.createElement("tr");
         for (let j = 0; j < cols; j++) {
             const cell = document.createElement("td");
-            cell.textContent = puzzleGrid[i][j]; 
-            cell.style.border = "1px solid black"; 
-            cell.style.width = "20px"; 
-            cell.style.height = "20px"; 
-            cell.style.textAlign = "center"; 
+            cell.textContent = puzzleGrid[i][j];
+            cell.style.border = "1px solid black";
+            cell.style.width = "20px";
+            cell.style.height = "20px";
+            cell.style.textAlign = "center";
+            cell.style.cursor = "pointer"; 
+            cell.addEventListener('click', function() {
+                if (selectedCells.includes(this)) {
+                    this.style.backgroundColor = ""; 
+                    selectedCells = selectedCells.filter(c => c !== this);
+                } else {
+                    this.style.backgroundColor = "#ADD8E6"; 
+                    selectedCells.push(this);
+                }
+            });
             row.appendChild(cell);
+
         }
         table.appendChild(row);
+
     }
     puzzleContainer.appendChild(table);
-} 
+//  In order to send the word that the user found we have to combine the letters then send it to the java source code for processing.
+    const submitButton = document.createElement("button");
+    submitButton.textContent = "Check Word";
+    submitButton.addEventListener('click', function() {
+        const word = selectedCells.map(cell => cell.textContent).join('');
+        sendWordToJava(word);
+    });
+    puzzleContainer.appendChild(submitButton);
+}
+
+function sendWordToJava(word) {
+    console.log("Sending word to server:", word);
+    socket.send(JSON.stringify({type: "wordCheck", word: word}));
+}
 
 function displayWordList(wordListData) { 
     const wordListContainer = document.getElementById("wordListContainer");

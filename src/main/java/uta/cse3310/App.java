@@ -114,8 +114,8 @@ public class App extends WebSocketServer {
       conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
       System.out.println(wordListJson); 
 
-
-
+    
+      /*
       Player player1 = new Player("Testplayer 1", 0, 0, 0); 
       Player player2 = new Player("Testplayer 2", 1, 0, 0);
       Player player3 = new Player("Testplayer 3", 2, 0, 0);
@@ -125,7 +125,7 @@ public class App extends WebSocketServer {
       players.add(player2);
       players.add(player3);
       players.add(player4); 
-
+       */
       Leaderboard leaderboard = new Leaderboard(players);
 
       String leaderboardJson = gson.toJson(leaderboard); 
@@ -147,7 +147,7 @@ public class App extends WebSocketServer {
   @Override
   public void onMessage(WebSocket conn, String message) {  
   System.out.println("Received message: " + message);
-
+    Game game = conn.getAttachment();
     Gson gson = new Gson(); 
 
     JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
@@ -157,6 +157,13 @@ public class App extends WebSocketServer {
             Player player = new Player(username, connectionId++, 0, 0); 
              players.add(player);
             conn.send("Username created: " + username);
+        }
+        else if(jsonObject.has("type") && jsonObject.get("type").getAsString().equals("wordCheck")) {
+            String word = jsonObject.get("word").getAsString(); 
+            System.out.println(word.toLowerCase()); 
+           game.checkForWord(word);
+
+           
         }      
   }
   
