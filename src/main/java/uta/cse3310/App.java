@@ -153,8 +153,10 @@ public class App extends WebSocketServer {
             String username = jsonObject.get("data").getAsString();
             handleLogin(conn, username);
             Player player = new Player(username, connectionId++, 0, 0); 
-             players.add(player);
-            conn.send("Username created: " + username);
+             players.add(player); 
+             System.out.println(player.getPlayerUsername());
+             String jsonUsername = gson.toJson(username);
+            conn.send(jsonUsername);
         }
         else if(jsonObject.has("type") && jsonObject.get("type").getAsString().equals("wordCheck")) {
             String word = jsonObject.get("word").getAsString(); 

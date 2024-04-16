@@ -7,10 +7,7 @@ socket.onopen = function(event) {
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
 
-    if (data.type === 'activeUsers') {
-        updateActiveUsers(data.users);
-    }
-
+    
     if (data.type === "puzzle") {
         displayPuzzle(data.data);
     } 
@@ -20,7 +17,9 @@ socket.onmessage = function(event) {
     else if(data.type === "leaderboard") {
         displayLeaderboard(data.data)
     }     
-    
+    else if (data.type === 'activeUsers') {
+        updateActiveUsers(data.users);
+    } 
 };
 
 function submitUsername() {
