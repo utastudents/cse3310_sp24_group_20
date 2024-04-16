@@ -45,13 +45,15 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-
+import javax.websocket.OnClose;
+import javax.websocket.Session;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -66,6 +68,7 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 
 public class App extends WebSocketServer {  
 
@@ -78,6 +81,8 @@ public class App extends WebSocketServer {
   private int connectionId = 0;
   private Instant startTime; 
   private Puzzle puzzle;
+
+  private static final Map<String, WebSocket> userSessions = new HashMap<>();
 
   public App(int port) { 
      super(new InetSocketAddress(port)); 
@@ -92,9 +97,32 @@ public class App extends WebSocketServer {
     
   }
 
+  private void startGameForAll() {
+    for (WebSocket session : userSessions.values()) {
+        Game game = session.getAttachment();
+        if (game != null) {
+            game.startGame();
+            
+            char[][] puzzleGrid = game.getBoard(); 
+            Gson gson = new Gson();
+            String puzzleJson = gson.toJson(puzzleGrid);
+            session.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
+            System.out.println(puzzleJson);
+      
+            ArrayList<String> wordsFromList = game.wordList(); 
+            String wordListJson = gson.toJson(wordsFromList); 
+            session.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
+            System.out.println(wordListJson); 
+
+        }
+    }
+}
+
+
   @Override
   public void onOpen(WebSocket conn, ClientHandshake handshake) {   
       System.out.println(conn + " Connected!!");
+      userSessions.put(conn.getRemoteSocketAddress().toString(), conn);
       ServerEvent event = new ServerEvent();
       Game game = new Game(GameId + 1); 
       conn.setAttachment(game);
@@ -104,15 +132,15 @@ public class App extends WebSocketServer {
       broadcast(jsonString);
       game.startGame(); 
       
-      char[][] puzzleGrid = game.getBoard(); 
-      String puzzleJson = gson.toJson(puzzleGrid);
-      conn.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
-      System.out.println(puzzleJson);
+      // char[][] puzzleGrid = game.getBoard(); 
+      // String puzzleJson = gson.toJson(puzzleGrid);
+      // conn.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
+      // System.out.println(puzzleJson);
       
-      ArrayList<String> wordsFromList = game.wordList(); 
-      String wordListJson = gson.toJson(wordsFromList); 
-      conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
-      System.out.println(wordListJson); 
+      // ArrayList<String> wordsFromList = game.wordList(); 
+      // String wordListJson = gson.toJson(wordsFromList); 
+      // conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
+      // System.out.println(wordListJson); 
 
     
       /*
@@ -133,6 +161,15 @@ public class App extends WebSocketServer {
       System.out.println(leaderboardJson);
 
   }
+  @OnClose
+  public void onClose(Session session) {
+    System.out.println("Client disconnected: " + session.getId());
+    players.remove(session);
+  }
+
+  public void onOpen(Session session) {
+    System.out.println("Client connected: " + session.getId());
+  }
 
   @Override
   public void onClose(WebSocket conn, int code, String reason, boolean remote) { 
@@ -148,23 +185,106 @@ public class App extends WebSocketServer {
     Game game = conn.getAttachment();
     Gson gson = new Gson(); 
 
-    JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
-        if (jsonObject.has("type") && jsonObject.get("type").getAsString().equals("username")) {
-            String username = jsonObject.get("data").getAsString();
-            handleLogin(conn, username);
-            Player player = new Player(username, connectionId++, 0, 0); 
-             players.add(player); 
-             System.out.println(player.getPlayerUsername());
-             String jsonUsername = gson.toJson(username);
-            conn.send(jsonUsername);
+    try {
+      // Parse the message as a JSON object
+      JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+
+      // Check if the message contains a "type" field
+      if (jsonObject.has("type")) {
+          String messageType = jsonObject.get("type").getAsString();
+
+          // Handle different message types
+          if ("username".equals(messageType)) {
+              // Handle username message
+              handleUsername(conn, jsonObject.get("data").getAsString());
+          } else if ("chatMessage".equals(messageType)) {
+              // Handle chat message
+              handleChatMessage(conn, jsonObject);
+          } else if ("wordCheck".equals(messageType)) {
+              // Handle word check message
+              handleWordCheck(conn, jsonObject);
+          }
+          else if ("startGame".equals(messageType)) {
+            // Start the game for all clients
+            startGameForAll();
         }
-        else if(jsonObject.has("type") && jsonObject.get("type").getAsString().equals("wordCheck")) {
-            String word = jsonObject.get("word").getAsString(); 
-            System.out.println(word); 
-            game.checkForWord(word.toLowerCase());
-        }      
+
+
+      }
+  } catch (JsonSyntaxException e) {
+      System.err.println("Error parsing JSON message: " + e.getMessage());
   }
-  
+}
+
+private void handleUsername(WebSocket conn, String username) {
+  Player player = new Player(username, connectionId++, 0, 0); 
+    players.add(player); 
+    System.out.println(player.getPlayerUsername());
+    Gson gson = new Gson();
+    conn.send(gson.toJson(username));
+}
+
+private void handleChatMessage(WebSocket conn, JsonObject messageJson) {
+  String username;
+  if (messageJson.has("username") && messageJson.get("username").isJsonPrimitive()) {
+      username = messageJson.get("username").getAsString();
+  } else {
+      username = "Unknown User";
+  }
+  String message = messageJson.get("message").getAsString();
+
+  for (WebSocket session : userSessions.values()) {
+      JsonObject chatMessage = new JsonObject();
+      chatMessage.addProperty("type", "chatMessage");
+      chatMessage.addProperty("username", username);
+      chatMessage.addProperty("message", message);
+      session.send(chatMessage.toString());
+  }
+}
+
+
+// Map to store username-score pairs
+private Map<String, Integer> scoreboard = new HashMap<>();
+
+
+private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
+  Game game = conn.getAttachment();
+  String username = messageJson.get("username").getAsString(); // Get the username
+  String word = messageJson.get("word").getAsString(); // Get the word
+
+  System.out.println(username + " submitted word: " + word);
+
+  // Check if the word is in the word list
+  if (game.isWordInList(word.toLowerCase())) {
+      int score = word.length(); // Calculate the score based on word length
+      System.out.println("Score: " + score);
+
+      // Check if the user already exists in the scoreboard
+      if (scoreboard.containsKey(username)) {
+          // Update the user's score by adding the new word's score
+          int currentScore = scoreboard.get(username);
+          int updatedScore = currentScore + score;
+          scoreboard.put(username, updatedScore);
+      } else {
+          // Add the user to the scoreboard with their initial score
+          scoreboard.put(username, score);
+      }
+
+      // Print the username, word, and score in the scoreboard
+      System.out.println("Username: " + username + ", Word: " + word + ", Score: " + score);
+
+      // Print the total score for the user
+      System.out.println("Total score for " + username + ": " + scoreboard.get(username));
+  } else {
+      System.out.println("Word is not in the wordlist, no points awarded.");
+  }
+
+  game.checkForWord(word.toLowerCase());
+}
+
+
+
+
   private void handleLogin(WebSocket conn, String username) {
     if (!isUsernameTaken(username)) {
       Player player = new Player(username);
@@ -177,14 +297,11 @@ public class App extends WebSocketServer {
       conn.send(gson.toJson(new Message("loginFailure", "Username already taken.")));
     }
   }
+
   private boolean isUsernameTaken(String username) {
 
-    for (Player player : activeUsers) {
-      if (player.getPlayerUsername().equals(username)) {
-        return true;
-      }
-    }
-    return false;
+ return activeUsers.stream().anyMatch(player -> player.getPlayerUsername().equals(username));
+
   }
 
   // Broadcast active users to all clients
@@ -218,7 +335,11 @@ public class App extends WebSocketServer {
 
     return "escape";
     
-  } 
+  }
+  
+
+
+
   public static void main(String[] args) {   
     String HttpPort = System.getenv("HTTP_PORT");
     int port = 9080;
@@ -245,8 +366,8 @@ public class App extends WebSocketServer {
     A.start();
     System.out.println("websocket Server started on port: " + port);
       
-  
-    
+
+
     /*String sep = "=".repeat(50);
     
     WordList wordList = new WordList();

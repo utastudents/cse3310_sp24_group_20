@@ -3,14 +3,18 @@ package uta.cse3310;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import org.json.JSONArray;
+import org.json.JSONObject;
 import net.freeutils.httpserver.HTTPServer;
 import net.freeutils.httpserver.HTTPServer.ContextHandler;
 import net.freeutils.httpserver.HTTPServer.FileContextHandler;
 import net.freeutils.httpserver.HTTPServer.Request;
 import net.freeutils.httpserver.HTTPServer.Response;
 import net.freeutils.httpserver.HTTPServer.VirtualHost;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 // http server include is a GPL licensed package from
@@ -57,8 +61,23 @@ public class HttpServer {
                     if (activeUserNames.length() > 0) {
                         activeUserNames.setLength(activeUserNames.length() - 2);
                     }
-                    resp.getHeaders().add("Content-Type", "text/plain");
-                    resp.send(200, "Active Users: " + activeUserNames);
+
+
+                    String leaderboardJson = generateLeaderboardJson(); // Assuming you have a method to generate JSON for the leaderboard
+                    String response = "Active Users: " + activeUserNames + "\nLeaderboard: " + leaderboardJson;
+                      resp.getHeaders().add("Content-Type", "text/plain");
+                     resp.send(200, response);
+                         return 0;
+                         }
+                         });
+
+            // Add a new context for serving leaderboard data
+            host.addContext("/leaderboard", new ContextHandler() {
+                public int serve(Request req, Response resp) throws IOException {
+                    // Assuming you have a method to retrieve leaderboard data
+                    String leaderboardData = getLeaderboardData();
+                    resp.getHeaders().add("Content-Type", "application/json");
+                    resp.send(200, leaderboardData);
                     return 0;
                 }
             });
@@ -70,6 +89,26 @@ public class HttpServer {
             System.err.println("error: " + e);
         }
 
+    }
+
+    private String getLeaderboardData() {
+        return "{\"leaderboard\": [{\"player\": \"Player1\", \"score\": 100}, {\"player\": \"Player2\", \"score\": 80}]}";
+    }
+    private List<Player> players = new ArrayList<>();
+    private String generateLeaderboardJson() {
+        JSONArray leaderboardArray = new JSONArray();
+    
+        // Assuming you have a list of players
+        for (Player player : players) {
+            JSONObject playerJson = new JSONObject();
+            playerJson.put("username", player.getPlayerUsername());
+            playerJson.put("score", player.getScore());
+            // Add more player data as needed
+    
+            leaderboardArray.put(playerJson);
+        }
+    
+        return leaderboardArray.toString();
     }
 
 }

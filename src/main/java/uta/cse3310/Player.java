@@ -26,8 +26,8 @@ public class Player {
         return playerUsername; 
     } 
     public void increaseScore(int pointsEarned) {
-        score += pointsEarned; 
-    } 
+        score += pointsEarned;
+    }
     public int getPlayerScore() {
         return score; 
     } 
