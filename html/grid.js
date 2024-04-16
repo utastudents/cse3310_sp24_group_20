@@ -48,7 +48,8 @@ function displayPuzzle(puzzleData) {
 
 function sendWordToJava(word) {
     console.log("Sending word to server:", word);
-    socket.send(JSON.stringify({type: "wordCheck", word: word}));
+    const username = window.username;
+    socket.send(JSON.stringify({type: "wordCheck",username: username, word: word}));
 }
 
 function displayWordList(wordListData) { 
@@ -87,8 +88,8 @@ function displayLeaderboard(leaderboardData) {
     if (leaderboardData && leaderboardData.players) {
         leaderboardData.players.forEach((player, index) => {
             const playerElement = document.createElement('p');
-            playerElement.textContent = (index + 1) + ". " + player.playerUsername + " - Score: " + player.score;
-            leaderboardContainer.appendChild(playerElement);
+            entryElement.textContent = `${index + 1}. ${entry.username} found "${entry.word}" - Score: ${entry.score}`;
+            leaderboardContainer.appendChild(entryElement);
         });
     } else {
         leaderboardContainer.textContent = "No leaderboard data available.";
