@@ -36,5 +36,4 @@ public class Leaderboard {
     public ArrayList<Player> getPlayers() {
         return players;
     }
-    
 }

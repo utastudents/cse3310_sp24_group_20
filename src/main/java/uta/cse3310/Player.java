@@ -16,7 +16,6 @@ public class Player {
     } 
     public Player(String playerUsername) {
         this.playerUsername = playerUsername;
-        // Assign default values to other fields
         this.playerIdentifier = 0;
         this.score = 0;
         this.totalGamesWon = 0;

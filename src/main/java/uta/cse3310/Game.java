@@ -6,16 +6,13 @@ import java.util.Map;
 
 public class Game { 
     private Puzzle puzzle = new Puzzle(50,50); 
-
     int gameIdentifier; 
-
+    private Map<String, Integer> userScores = new HashMap<>();
 
     public Game(int gameIdentifier) { 
         this.gameIdentifier = gameIdentifier;
     } 
 
-
-    
     public void startGame() {
         puzzle.initializeBoard(); 
         puzzle.fillRandomLetters();
@@ -42,11 +39,9 @@ public class Game {
                 return true; 
             }
         } 
-         System.out.println("Word is not the wordlist");
+        System.out.println("Word is not the wordlist");
         return false;
     }
-
-
 
     public boolean isWordInList(String word) {
      ArrayList<String> wordsFromList = puzzle.getWordList();  
@@ -57,7 +52,7 @@ public class Game {
         }
         return false;
     }
-    private Map<String, Integer> userScores = new HashMap<>(); // Map to store user scores
+     
     
     private void updateUserScore(String username, int score) {
         userScores.put(username, userScores.getOrDefault(username, 0) + score);

@@ -37,13 +37,12 @@ public class HttpServer {
             File dir = new File(dirname);
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
-            // set up server
             HTTPServer server = new HTTPServer(port);
-            VirtualHost host = server.getVirtualHost(null); // default host
-            host.setAllowGeneratedIndex(true); // with directory index pages
+            VirtualHost host = server.getVirtualHost(null); 
+            host.setAllowGeneratedIndex(true); 
             host.addContext("/", new FileContextHandler(dir));
             host.addContext("/api/time", new ContextHandler() {
-                public int serve(Request req, Response resp) throws IOException {
+            public int serve(Request req, Response resp) throws IOException {
                     long now = System.currentTimeMillis();
                     resp.getHeaders().add("Content-Type", "text/plain");
                     resp.send(200, String.format("%tF %<tT", now));
@@ -57,35 +56,29 @@ public class HttpServer {
                     for (Player player : activeUsers) {
                         activeUserNames.append(player.getPlayerUsername()).append(", ");
                     }
-                    // Remove the trailing comma and space
                     if (activeUserNames.length() > 0) {
                         activeUserNames.setLength(activeUserNames.length() - 2);
                     }
 
 
-                    String leaderboardJson = generateLeaderboardJson(); // Assuming you have a method to generate JSON for the leaderboard
+                    String leaderboardJson = generateLeaderboardJson(); 
                     String response = "Active Users: " + activeUserNames + "\nLeaderboard: " + leaderboardJson;
-                      resp.getHeaders().add("Content-Type", "text/plain");
-                     resp.send(200, response);
+                    resp.getHeaders().add("Content-Type", "text/plain");
+                    resp.send(200, response);
                          return 0;
                          }
                          });
-
-            // Add a new context for serving leaderboard data
             host.addContext("/leaderboard", new ContextHandler() {
                 public int serve(Request req, Response resp) throws IOException {
-                    // Assuming you have a method to retrieve leaderboard data
                     String leaderboardData = getLeaderboardData();
                     resp.getHeaders().add("Content-Type", "application/json");
                     resp.send(200, leaderboardData);
                     return 0;
                 }
             });
-
-
-
             server.start();
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             System.err.println("error: " + e);
         }
 
@@ -97,18 +90,12 @@ public class HttpServer {
     private List<Player> players = new ArrayList<>();
     private String generateLeaderboardJson() {
         JSONArray leaderboardArray = new JSONArray();
-    
-        // Assuming you have a list of players
         for (Player player : players) {
             JSONObject playerJson = new JSONObject();
             playerJson.put("username", player.getPlayerUsername());
             playerJson.put("score", player.getScore());
-            // Add more player data as needed
-    
             leaderboardArray.put(playerJson);
         }
-    
         return leaderboardArray.toString();
     }
-
 }

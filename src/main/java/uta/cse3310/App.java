@@ -83,6 +83,7 @@ public class App extends WebSocketServer {
   private Puzzle puzzle;
 
   private static final Map<String, WebSocket> userSessions = new HashMap<>();
+  private Map<String, Integer> scoreboard = new HashMap<>();
 
   public App(int port) { 
      super(new InetSocketAddress(port)); 
@@ -186,26 +187,17 @@ public class App extends WebSocketServer {
     Gson gson = new Gson(); 
 
     try {
-      // Parse the message as a JSON object
       JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
-
-      // Check if the message contains a "type" field
       if (jsonObject.has("type")) {
           String messageType = jsonObject.get("type").getAsString();
-
-          // Handle different message types
           if ("username".equals(messageType)) {
-              // Handle username message
               handleUsername(conn, jsonObject.get("data").getAsString());
           } else if ("chatMessage".equals(messageType)) {
-              // Handle chat message
               handleChatMessage(conn, jsonObject);
           } else if ("wordCheck".equals(messageType)) {
-              // Handle word check message
               handleWordCheck(conn, jsonObject);
           }
           else if ("startGame".equals(messageType)) {
-            // Start the game for all clients
             startGameForAll();
         }
 
@@ -242,38 +234,24 @@ private void handleChatMessage(WebSocket conn, JsonObject messageJson) {
   }
 }
 
-
-// Map to store username-score pairs
-private Map<String, Integer> scoreboard = new HashMap<>();
-
-
 private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
   Game game = conn.getAttachment();
-  String username = messageJson.get("username").getAsString(); // Get the username
-  String word = messageJson.get("word").getAsString(); // Get the word
+  String username = messageJson.get("username").getAsString(); 
+  String word = messageJson.get("word").getAsString(); 
 
   System.out.println(username + " submitted word: " + word);
 
-  // Check if the word is in the word list
   if (game.isWordInList(word.toLowerCase())) {
-      int score = word.length(); // Calculate the score based on word length
+      int score = word.length(); 
       System.out.println("Score: " + score);
-
-      // Check if the user already exists in the scoreboard
       if (scoreboard.containsKey(username)) {
-          // Update the user's score by adding the new word's score
           int currentScore = scoreboard.get(username);
           int updatedScore = currentScore + score;
           scoreboard.put(username, updatedScore);
       } else {
-          // Add the user to the scoreboard with their initial score
           scoreboard.put(username, score);
       }
-
-      // Print the username, word, and score in the scoreboard
       System.out.println("Username: " + username + ", Word: " + word + ", Score: " + score);
-
-      // Print the total score for the user
       System.out.println("Total score for " + username + ": " + scoreboard.get(username));
   } else {
       System.out.println("Word is not in the wordlist, no points awarded.");
@@ -303,8 +281,6 @@ private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
  return activeUsers.stream().anyMatch(player -> player.getPlayerUsername().equals(username));
 
   }
-
-  // Broadcast active users to all clients
   private void broadcastActiveUsers() {
     List<String> activeUsernames = new ArrayList<>();
     Gson gson = new Gson();

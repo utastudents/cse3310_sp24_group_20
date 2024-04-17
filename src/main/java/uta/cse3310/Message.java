@@ -8,7 +8,7 @@ public class Message {
     private List<String> activeUsers;
 
     public Message() {
-        // Default constructor needed for JSON deserialization
+        
     }
 
     public Message(String type, String username) {
@@ -20,8 +20,7 @@ public class Message {
         this.type = type;
         this.activeUsers = activeUsers;
     }
-
-    // Getters and setters
+    
     public String getType() {
         return type;
     }

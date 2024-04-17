@@ -31,11 +31,8 @@ socket.onmessage = function(event) {
 
 
     function updateLeaderboardUI(leaderboard) {
-        // Assuming you have an HTML element with id "leaderboard" to display the leaderboard
         const leaderboardElement = document.getElementById('leaderboard');
-        leaderboardElement.innerHTML = ''; // Clear previous data
-    
-        // Iterate over leaderboard data and create HTML elements
+        leaderboardElement.innerHTML = ''; 
         leaderboard.forEach((player, index) => {
             const playerElement = document.createElement('div');
             playerElement.textContent = `${index + 1}. ${player.username} - Score: ${player.score}`;
@@ -46,7 +43,7 @@ socket.onmessage = function(event) {
 function submitUsername() {
     
     const username = document.getElementById("username").value;
-    if (username !== "") { // Check if username is not empty
+    if (username !== "") { 
         window.username = username;   
     socket.send(JSON.stringify({ type: "username", data: username }));
     
@@ -56,7 +53,7 @@ function submitUsername() {
     }
     else {
        
-        alert("Please enter a username."); // Show an alert if username is empty
+        alert("Please enter a username."); 
     }
     //console.log(username);
 }
@@ -77,7 +74,6 @@ function fetchActiveUsers() {
         });
 }
 
-// Function to update active users table
 function updateActiveUsers(users) {
     activeUsersList.innerHTML = '';
     users.forEach(user => {
@@ -102,27 +98,20 @@ function sendMessage() {
             message: message
         };
         socket.send(JSON.stringify(chatMessage));
-        messageInput.value = ''; // Clear input after sending
+        messageInput.value = ''; 
     }
 }
-
 
 function displayChatMessage(username, message) {
     const chatbox = document.getElementById('chatbox');
     const messageElement = document.createElement('div');
     messageElement.textContent = `${username}: ${message}`;
     chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the latest message
+    chatMessages.scrollTop = chatMessages.scrollHeight; 
 }
-
-
-
-
-
 
 function StartGame(){
     document.querySelector(".mainGame").style.display ="block";
-     // Call the method to broadcast the "Start Game" message
      broadcastStartGame();
 
 }
