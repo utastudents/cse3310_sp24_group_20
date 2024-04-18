@@ -34,15 +34,19 @@ function displayPuzzle(puzzleData) {
 
     }
     puzzleContainer.appendChild(table);
+
 //  In order to send the word that the user found we have to combine the letters then send it to the java source code for processing.
     const submitButton = document.createElement("button");
     submitButton.textContent = "Check Word";
+
     submitButton.addEventListener('click', function() {
         const word = selectedCells.map(cell => cell.textContent).join('');
         sendWordToJava(word);
         selectedCells.forEach(cell => cell.style.backgroundColor = "");
+        highlightSelectedWord(selectedCells);
         selectedCells = [];
     });
+
     puzzleContainer.appendChild(submitButton);
 }
 
@@ -51,6 +55,20 @@ function sendWordToJava(word) {
     const username = window.username;
     socket.send(JSON.stringify({type: "wordCheck",username: username, word: word}));
 }
+
+function highlightSelectedWord(selectedCells) {
+    selectedCells.forEach(cell => {
+        cell.classList.add('highlighted');
+    });
+}
+
+// Function to remove highlighting from cells
+function removeHighlighting(selectedCells) {
+    selectedCells.forEach(cell => {
+        cell.classList.remove('highlighted');
+    });
+}
+
 
 function displayWordList(wordListData) { 
     const wordListContainer = document.getElementById("wordListContainer");
@@ -95,6 +113,9 @@ function displayLeaderboard(leaderboardData) {
         leaderboardContainer.textContent = "No leaderboard data available.";
 
     }
+
+
+    
     
 } 
 

@@ -8,6 +8,7 @@ socket.onopen = function(event) {
 };
 
 socket.onmessage = function(event) {
+    console.log("Message received from server:", event.data); // Log received message
     const data = JSON.parse(event.data);
 
     
@@ -18,11 +19,11 @@ socket.onmessage = function(event) {
         displayWordList(data.data);
     } 
     else if(data.type === "leaderboard") {
-        const leaderboard = data.data;
-        updateLeaderboardUI(leaderboard);
+        updateLeaderboardUI(data.data);
     }     
-    else if (data.type === 'activeUsers') {
-        updateActiveUsers(data.users);
+    else if (data.type === 'activeUsersUpdate') {
+        console.log("Message received from server:",data.user);
+         displayActiveUser(data.user)
     }
     else if (data.type === 'chatMessage') {
         displayChatMessage(data.username, data.message);    
@@ -31,14 +32,20 @@ socket.onmessage = function(event) {
 
 
     function updateLeaderboardUI(leaderboard) {
-        const leaderboardElement = document.getElementById('leaderboard');
-        leaderboardElement.innerHTML = ''; 
-        leaderboard.forEach((player, index) => {
-            const playerElement = document.createElement('div');
-            playerElement.textContent = `${index + 1}. ${player.username} - Score: ${player.score}`;
-            leaderboardElement.appendChild(playerElement);
-        });
-    }
+    console.log("Leaderboard data:", leaderboard); // Log the leaderboard data
+    leaderboardData = leaderboard;
+
+    const leaderboardElement = document.getElementById('leaderboardContainer');
+    leaderboardElement.innerHTML = ''; 
+
+    const players = leaderboard.players; // Access the players array from the leaderboard object
+
+    players.forEach((player, index) => { // Change `leaderboard.forEach` to `players.forEach`
+        const playerElement = document.createElement('div');
+        playerElement.textContent = `${index + 1}. ${player.username} - Score: ${player.score}`;
+        leaderboardElement.appendChild(playerElement);
+    });
+}
 
 function submitUsername() {
     
@@ -58,31 +65,17 @@ function submitUsername() {
     //console.log(username);
 }
 
-function fetchActiveUsers() {
-    fetch('/active-users')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            updateActiveUsers(data.activeUsers);
-        })
-        .catch(error => {
-            console.error('Error fetching active users:', error);
-        });
-}
 
-function updateActiveUsers(users) {
+function updateActiveUsers(activeUsers) {
+    console.log("Updating active users:", activeUsers);
     activeUsersList.innerHTML = '';
-    users.forEach(user => {
+    activeUsers.forEach(user => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${user}</td>
-            <td><span class="badge bg-success">Online</span></td>
-        `;
-        activeUsersList.appendChild(row);
+        <td>${user.username}</td>
+        <td><span class="badge bg-success">Online</span></td>
+    `;
+    activeUsersList.appendChild(row);
     });
 }
 
@@ -109,6 +102,14 @@ function displayChatMessage(username, message) {
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight; 
 }
+
+function displayActiveUser(username){
+    const activeUsersList = document.getElementById("activeUsersList");
+    messageElement.textContent = `${username}`;
+    Activeuser.appendChild(messageElement);
+}
+
+
 
 function StartGame(){
     document.querySelector(".mainGame").style.display ="block";

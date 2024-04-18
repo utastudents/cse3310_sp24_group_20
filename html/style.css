@@ -58,4 +58,11 @@ button:hover {
 }
 
 
+.selected {
+    background-color: #ADD8E6; /* Add your desired highlight color */
+}
 
+
+.highlighted {
+    background-color: yellow; /* Change this to the desired highlight color */
+}
