@@ -22,8 +22,7 @@ socket.onmessage = function(event) {
         updateLeaderboardUI(data.data);
     }     
     else if (data.type === 'activeUsersUpdate') {
-        console.log("Message received from server:",data.user);
-         displayActiveUser(data.user)
+         displayActiveUser(data.activeUsers)
     }
     else if (data.type === 'chatMessage') {
         displayChatMessage(data.username, data.message);    
@@ -103,10 +102,18 @@ function displayChatMessage(username, message) {
     chatMessages.scrollTop = chatMessages.scrollHeight; 
 }
 
-function displayActiveUser(username){
+function displayActiveUser(activeUsers) {
     const activeUsersList = document.getElementById("activeUsersList");
-    messageElement.textContent = `${username}`;
-    Activeuser.appendChild(messageElement);
+    activeUsersList.innerHTML = ''; // Clear the previous list
+    
+    activeUsers.forEach(username => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${username}</td>
+            <td><span class="badge bg-success">Online</span></td>
+        `;
+        activeUsersList.appendChild(row);
+    });
 }
 
 
