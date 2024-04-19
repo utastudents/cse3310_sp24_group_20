@@ -170,6 +170,7 @@ public class App extends WebSocketServer {
 
   public void onOpen(Session session) {
     System.out.println("Client connected: " + session.getId());
+    
   }
 
   @Override
@@ -210,11 +211,18 @@ public class App extends WebSocketServer {
 
 private void handleUsername(WebSocket conn, String username) {
   Player player = new Player(username, connectionId++, 0, 0); 
-    players.add(player); 
-    System.out.println(player.getPlayerUsername());
-    Gson gson = new Gson();
-    conn.send(gson.toJson(username));
+  players.add(player); 
+  activeUsers.add(player);
+  System.out.println(player.getPlayerUsername());
+  Gson gson = new Gson();
+  // Create a new JsonObject to hold the message
+  Message message = new Message("activeUsersUpdate", Collections.singletonList(username));
+  String messageJson = gson.toJson(message);
+  conn.send(messageJson); // Send active user update to the newly connected client
+  
+  broadcastActiveUsers();
 }
+
 
 private void handleChatMessage(WebSocket conn, JsonObject messageJson) {
   String username;
@@ -267,7 +275,6 @@ private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
     if (!isUsernameTaken(username)) {
       Player player = new Player(username);
       activeUsers.add(player);
-      broadcastActiveUsers();
       Gson gson = new Gson();
       conn.send(gson.toJson(new Message("loginSuccess", "Login successful.")));
     } else {
@@ -281,15 +288,22 @@ private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
  return activeUsers.stream().anyMatch(player -> player.getPlayerUsername().equals(username));
 
   }
-  private void broadcastActiveUsers() {
-    List<String> activeUsernames = new ArrayList<>();
-    Gson gson = new Gson();
-    for (Player player : activeUsers) {
-      activeUsernames.add(player.getPlayerUsername());
-    }
-    Message message = new Message("activeUsersUpdate", activeUsernames);
-    broadcast(gson.toJson(message));
+  
+
+    private void broadcastActiveUsers() {
+      Gson gson = new Gson();
+      List<String> activeUsernames = new ArrayList<>();
+      for (Player player : activeUsers) {
+          activeUsernames.add(player.getPlayerUsername());
+      }
+      Message message = new Message("activeUsersUpdate", activeUsernames);
+      String messageJson = gson.toJson(message);
+      
+      for (WebSocket session : userSessions.values()) {
+          session.send(messageJson);
+      }
   }
+  
 
   @Override
   public void onMessage(WebSocket conn, ByteBuffer message) {
