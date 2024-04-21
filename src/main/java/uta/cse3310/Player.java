@@ -1,6 +1,6 @@
 package uta.cse3310;
 
-public class Player {  
+public class Player{  
 
   
     private String playerUsername; 
@@ -44,6 +44,11 @@ public class Player {
     public int getTotalGamesWon() {
         return totalGamesWon;
     }
-    
+
+  //-------------------------------------------------------------------------------------------------------------------------------------
+    public void setScore(int newScore){
+        this.score = newScore;
+    }
+  //-------------------------------------------------------------------------------------------------------------------------------------
     
 } 

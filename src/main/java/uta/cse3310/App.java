@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
+import javax.swing.text.html.HTMLDocument.Iterator;
 import javax.websocket.OnClose;
 import javax.websocket.Session;
 import org.java_websocket.WebSocket;
@@ -186,6 +187,7 @@ public class App extends WebSocketServer {
   System.out.println("Received message: " + message);
     Game game = conn.getAttachment();
     Gson gson = new Gson(); 
+    System.out.println("The Message is "+message);
 
     try {
       JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
@@ -266,6 +268,15 @@ private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
   }
 
   game.checkForWord(word.toLowerCase());
+
+
+  //Update player's score----------------------------------------------------------------------------------------------------------------
+  for (Player i: players){
+    if(username.equals(i.getPlayerUsername()))  i.setScore((int) scoreboard.get(username));
+  }
+  leaderboard = new Leaderboard(players);
+  System.out.println(leaderboard.toString());
+  //-------------------------------------------------------------------------------------------------------------------------------------
 }
 
 

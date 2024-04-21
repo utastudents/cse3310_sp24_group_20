@@ -2,7 +2,11 @@ package uta.cse3310;
 
 import java.util.ArrayList; 
 import java.util.Collections; 
-import java.util.Comparator; 
+import java.util.Comparator;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
+
+import org.java_websocket.WebSocket; 
 
 public class Leaderboard {
  
@@ -36,4 +40,23 @@ public class Leaderboard {
     public ArrayList<Player> getPlayers() {
         return players;
     }
+
+    // private void handleLeaderboard(WebSocket conn){
+    //     //Sorting players in descending order of score
+    //     Collections.sort(players);
+
+    //     //Iterator for each player object
+    //     Iterator playersIterator = players.iterator();
+
+
+    //     String message = new String();
+
+    //     for(Player p: playersIterator){
+    //         String number = new String(p.getScore());
+    //         String newMessage = new String(p.getPlayerUsername()+number+"\n");
+    //         message.concat(newMessage);
+    //     }
+    //     String messageJson = gson.toJson(message);
+    //     conn.send(messageJson);
+    //     }
 }
