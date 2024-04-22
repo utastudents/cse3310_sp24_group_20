@@ -11,6 +11,20 @@
 
 
 }
+
+#timer{
+    text-align: center; 
+    margin-left: 45%;
+}
+
+#gameEndMessage{
+    text-align: center; 
+    margin-left: 35%;
+    margin-right: 5%;
+    margin-bottom: 5%;
+}
+
+
 .imagecentre{
     display: block;
   margin-left: auto;

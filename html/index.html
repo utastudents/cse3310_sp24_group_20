@@ -52,7 +52,11 @@
 
                      <div>
                      <button onclick="StartGame()">StartGame</button>
-                     <button id="joinGameButton" style="display: none;">Join Game</button>
+
+                     <div id="JoinGame">
+                     <button id="joinGameButton" onclick="JoinGame()" style="display: none;">Join Game</button>
+                     </div>
+
                      </div>
 
                    </div>
@@ -62,6 +66,8 @@
 
                </div>
 
+             
+
 <div class ="mainGame" style ="display: none; ">
 
 
@@ -69,6 +75,15 @@
     <div id="wordListContainer" style="height: 200px; width: 80%; overflow-y: scroll; border: 1px solid #443b3b; padding: 10px;" class="ListWords">
     </div>
 <hr>
+<div id="timer" style="height: 50px; width: 100px;border: 2px solid #443b3b; padding: 10px;" ></div>
+              
+
+<br>
+<div id="gameEndMessage"style="height: 50px; width: 500px; border: 2px solid #443b3b; padding: 10px;"></div>
+
+
+<hr>
+
     <h1 style="text-align:center;"> The WordSearch Game</h1>  
     <div id="wordSearchContainer" ></div> 
 <hr>

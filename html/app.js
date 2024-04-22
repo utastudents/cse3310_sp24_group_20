@@ -37,8 +37,64 @@ socket.onmessage = function(event) {
             // Display the puzzle when the user joins the game
         displayPuzzle(data.data);
         }
+    else if (data.type === "startTimer") {
+            startTimer(data.data);
+        } 
+    else if (data.type === "updateTimer") {
+            updateTimer(data.data);
+        }
+    else if (data.type === "gameEnd") {
+        displayGameEndMessage(data.username);
+    }
 
     };
+
+    function displayGameEndMessage(message) {
+
+        console.log(message);
+       
+            // Extract the winner's username from the message
+            const winnerUsername = message.split(":")[1].trim();
+        
+            // Display the game end message along with the winner's username on the frontend
+            const gameEndMessageElement = document.getElementById("gameEndMessage");
+            gameEndMessageElement.textContent = `Game ended! Winner:  ${winnerUsername}`;
+
+        
+    }
+
+    let timerInterval;
+
+    function startTimer(remainingTime) {
+        clearInterval(timerInterval); // Clear any existing timer interval
+        updateTimer(remainingTime); // Update the timer immediately
+    
+        // Start a new interval to update the timer every second
+        timerInterval = setInterval(() => {
+            updateTimer(--remainingTime);
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval); // Stop the timer when it reaches 0
+            }
+        }, 1000);
+    }
+    
+    function updateTimer(remainingTime) {
+        // Display the remaining time in a timer element on the page
+        const timerElement = document.getElementById("timer");
+        timerElement.textContent = formatTime(remainingTime); // Format time as HH:MM:SS
+    }
+    
+    function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+    }
+    
+    function pad(num) {
+        return num.toString().padStart(2, "0");
+    }
+
 
     function displayJoinGameButton() {
         const joinGameButton = document.createElement('button');
