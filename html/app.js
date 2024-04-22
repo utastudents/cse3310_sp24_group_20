@@ -1,7 +1,7 @@
 const activeUsersList = document.getElementById("activeUsersList");
 const chatMessages = document.getElementById('chatbox');
 
-const socket = new WebSocket("ws://localhost:9880"); 
+const socket = new WebSocket("ws://localhost:9120"); 
 
 socket.onopen = function(event) {
     console.log("WebSocket connection established.");
