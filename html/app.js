@@ -19,7 +19,7 @@ socket.onmessage = function(event) {
         displayWordList(data.data);
     } 
     else if(data.type === "leaderboard") {
-        updateLeaderboardUI(data.data);
+        displayLeaderboard(data.data); // Update the leaderboard UI
     }     
     else if (data.type === 'activeUsersUpdate') {
          displayActiveUser(data.activeUsers)
@@ -27,8 +27,34 @@ socket.onmessage = function(event) {
     else if (data.type === 'chatMessage') {
         displayChatMessage(data.username, data.message);    
         }
+    else if (data.type === 'startGame') {
+        console.log("Received startGame message from server");
+        document.getElementById("joinGameButton").style.display = "block";
+        displayJoinGameButton(); // Display the "Join Game" button
+        }
+    else if (data.type === 'joinGame') {
+        console.log("Received joinGame message from server");
+            // Display the puzzle when the user joins the game
+        displayPuzzle(data.data);
+        }
+
     };
 
+    function displayJoinGameButton() {
+        const joinGameButton = document.createElement('button');
+        joinGameButton.textContent = 'Join Game';
+        joinGameButton.id = 'joinGameButton'; // Assign an ID for easy access
+        joinGameButton.addEventListener('click', joinGame);
+        document.querySelector('.gameSection div:last-child').appendChild(joinGameButton); // Append to the last div inside .gameSection
+    }
+
+    function joinGame() {
+        // Send a message to the server indicating the user's intention to join the game
+        const joinGameMessage = {
+            type: 'joinGame'
+        };
+        socket.send(JSON.stringify(joinGameMessage));
+    }
 
     function updateLeaderboardUI(leaderboard) {
     console.log("Leaderboard data:", leaderboard); // Log the leaderboard data
@@ -117,11 +143,14 @@ function displayActiveUser(activeUsers) {
 }
 
 
-
 function StartGame(){
     document.querySelector(".mainGame").style.display ="block";
-     broadcastStartGame();
-
+     // Broadcast the "Start Game" event to all connected clients
+     const startGameMessage = {
+        type: 'startGame'
+    };
+    socket.send(JSON.stringify(startGameMessage));
+    console.log("Sent startGame message to server");
 }
 
 function broadcastStartGame() {

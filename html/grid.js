@@ -1,5 +1,5 @@
  // This section of code will display the table from code aswell as create the buttons for each cell.
-function displayPuzzle(puzzleData) {
+ function displayPuzzle(puzzleData) {
     const puzzleContainer = document.getElementById("wordSearchContainer");
     puzzleContainer.innerHTML = "";
     const puzzleGrid = puzzleData;
@@ -106,8 +106,8 @@ function displayLeaderboard(leaderboardData) {
     if (leaderboardData && leaderboardData.players) {
         leaderboardData.players.forEach((player, index) => {
             const playerElement = document.createElement('p');
-            entryElement.textContent = `${index + 1}. ${entry.username} found "${entry.word}" - Score: ${entry.score}`;
-            leaderboardContainer.appendChild(entryElement);
+            playerElement.textContent = `${index + 1}. ${player.playerUsername}- Score: ${player.score}`;
+            leaderboardContainer.appendChild(playerElement);
         });
     } else {
         leaderboardContainer.textContent = "No leaderboard data available.";
