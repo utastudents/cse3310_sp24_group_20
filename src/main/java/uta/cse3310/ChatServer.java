@@ -37,4 +37,11 @@ public class ChatServer {
             session.getAsyncRemote().sendText(message);
         }
     }
+
+    public static Set<Session> getSessions() {
+        return sessions;
+    }
+    
+    
+    
 }
