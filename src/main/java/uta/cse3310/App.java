@@ -70,6 +70,8 @@
  import com.google.gson.GsonBuilder;
  import com.google.gson.JsonObject;
  import com.google.gson.JsonSyntaxException;
+
+ 
  
  public class App extends WebSocketServer {  
  
@@ -82,6 +84,9 @@
    private int connectionId = 0;
    private Instant startTime; 
    private Puzzle puzzle;
+  
+  private Duration gameDuration = Duration.ofMinutes(1); // Set the game duration to 5 minutes
+
  
    private static final Map<String, WebSocket> userSessions = new HashMap<>();
    private Map<String, Integer> scoreboard = new HashMap<>();
@@ -100,6 +105,8 @@
    }
  
    private void startGameForAll() {
+    startTime = Instant.now();
+    long remainingTime = gameDuration.getSeconds();
      for (WebSocket session : userSessions.values()) {
          Game game = session.getAttachment();
          if (game != null) {
@@ -116,9 +123,29 @@
              session.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
              System.out.println(wordListJson); 
  
+             session.send("{\"type\": \"startTimer\", \"data\": " + remainingTime + "}");
+
          }
      }
- }
+      // Start a timer task to update the remaining time every second
+    Timer timer = new Timer();
+    timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            long elapsedTime = Duration.between(startTime, Instant.now()).getSeconds();
+            long remainingTime = gameDuration.getSeconds() - elapsedTime;
+            if (remainingTime <= 0) {
+                timer.cancel(); // Stop the timer when the game ends
+                endGame(); // End the game
+            }
+            // Broadcast the updated remaining time to all clients
+            for (WebSocket session : userSessions.values()) {
+                session.send("{\"type\": \"updateTimer\", \"data\": " + remainingTime + "}");
+            }
+        }
+    }, 0, 1000); // Update the timer every second
+}
+
  
  
    @Override
@@ -270,6 +297,11 @@
    String word = messageJson.get("word").getAsString(); 
  
    System.out.println(username + " submitted word: " + word);
+
+   if (Instant.now().isAfter(startTime.plus(gameDuration))) {
+    endGame(); // End the game if it has exceeded the time limit
+    return;
+}
  
    if (game.isWordInList(word.toLowerCase())) {
        int score = word.length(); 
@@ -299,6 +331,33 @@
    broadcastLeaderboard();
    //-------------------------------------------------------------------------------------------------------------------------------------
  }
+
+ private void endGame() {
+  System.out.println("Game ended!");
+
+  // Calculate final scores and display a summary
+  StringBuilder summary = new StringBuilder("Game Summary:\n");
+  for (Player player : players) {
+      summary.append(player.getPlayerUsername()).append(": ").append(player.getScore()).append(" points\n");
+  }
+  System.out.println(summary.toString());
+
+  // Find the winner
+  Player winner = players.get(0); // Assuming the winner is at index 0
+  int highestScore = 0;
+  for (Player player : players) {
+      if (player.getScore() > highestScore) {
+          highestScore = player.getScore();
+          winner = player;
+      }
+  }
+
+  // Broadcast a message to all players indicating that the game has ended
+  Gson gson = new Gson();
+  String endGameMessage = gson.toJson(new Message("gameEnd", "The game has ended.The winner is: " + winner.getPlayerUsername() + ".Thanks for playing!"));
+  broadcast(endGameMessage);
+}
+
  private void broadcastLeaderboard() {
    Gson gson = new Gson();
    String leaderboardJson = gson.toJson(leaderboard);
