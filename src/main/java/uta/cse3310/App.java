@@ -77,6 +77,8 @@
  
    // Test players for leaderboard 
    Set<Player> activeUsers = new HashSet<>();
+   Set<Player> userlist = new HashSet<>();
+
    ArrayList<Player> players = new ArrayList<Player>();
    private Vector<Game> activeGames = new Vector<Game>(); 
    private Leaderboard leaderboard;
@@ -190,6 +192,8 @@
        String leaderboardJson = gson.toJson(leaderboard); 
        conn.send("{\"type\": \"leaderboard\", \"data\": " + leaderboardJson + "}"); 
        System.out.println(leaderboardJson);
+
+
  
    }
  
@@ -235,17 +239,70 @@
            else if ("startGame".equals(messageType)) {
              startGameForAll();
          }
-         else if ("joinGame".equals(messageType)) {
-           handleJoinGame(conn); // Handle the "joinGame" message
+         else if ("gameType".equals(messageType)) {
+          handleGameTypeSelection(conn, jsonObject);
+      }
        }
- 
- 
-       }
+
    } catch (JsonSyntaxException e) {
        System.err.println("Error parsing JSON message: " + e.getMessage());
    }
  }
+ private void handleGameTypeSelection(WebSocket conn, JsonObject messageJson) {
+  // Extract the selected game type from the message
+
+  System.out.println("Handling gameType message...");
+
+  int numPlayers = messageJson.get("numPlayers").getAsInt();
+    String userlist = messageJson.get("userlist").getAsString();
+  switch (numPlayers) {
+    case 2:
+        // Create a two-player game
+        createGame(conn, 2, userlist);
+        break;
+    case 3:
+        // Create a three-player game
+        createGame(conn, 3, userlist);
+        break;
+    case 4:
+        // Create a four-player game
+        createGame(conn, 4, userlist);
+        break;
+    default:
+        // Handle unsupported number of players
+        break;
+  }
+
+JsonObject message = new JsonObject();
+message.addProperty("type", "gameType");
+message.addProperty("numPlayers", numPlayers);
+message.addProperty("userlist", userlist);
  
+Gson gson = new Gson();
+
+   // Create a new JsonObject to hold the message
+   Message message1 = new Message("gameType", userlist);
+   String messageJson1 = gson.toJson(message1);
+   conn.send(messageJson1); 
+}
+
+
+private void createGame(WebSocket conn, int numPlayers, String userlist) {
+  Game game = new Game(GameId++);
+  // If the required number of players has joined, start the game
+  if (game.getNumPlayers() == numPlayers) {
+    System.out.println("You can start game"+ numPlayers);
+
+      startGameForAll();
+  }
+  broadcastUsernames(userlist);
+}
+
+private void broadcastUsernames(String userlist) {
+
+}
+
+
  private void handleJoinGame(WebSocket conn) {
    Game game = conn.getAttachment();
    Gson gson = new Gson();
