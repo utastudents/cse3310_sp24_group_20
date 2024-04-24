@@ -50,18 +50,183 @@
                         </div>
                      </div>
 
-                     <div>
+                     <div id="gameTypeSelection" class="GameType">
+
+                        <h2>Select Game Type</h2>
+                        <div>
+                        <button id = "twoPlayer" onclick="selectGameType(2)">2 Players</button>
+                        </div>
+
+                       
+
+                        <div>
+                        <button id = "twoPlayer" onclick="selectGameType(3)">3 Players</button>
+                        </div>
+
+                        <div>
+                        <button id = "twoPlayer"  onclick="selectGameType(4)">4 Players</button>
+                        </div>
+
+                        <br>
+                        <br>
+                        </div>
+
+                        <div id="gameTypeSections">
+                            <!-- 2 Players Game Section -->
+                            <div id="gameType2" class="gameTypeSection1" style="display: none;">
+                                <!-- Content for 2 Players game type -->
+                                <br>
+                                <h2>Game Type: 2 Players</h2>
+                                <div id="TwoPlayers" class="mt-5">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Players Ready to Play</th>  
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TwoPlayerList">
+                                            <!-- users will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Add your content for 2 Players game type here -->
+                                <div id="playerList2"></div>
+                                <button onclick="StartGame()">Start Game</button>
+                                <div id="JoinGame">
+                                    <br>
+                                    <button id="joinGameButton" onclick="JoinGame()">Join Game</button>
+                                </div>
+                            </div>
+        
+                            <!-- 3 Players Game Section -->
+                            <div id="gameType3" class="gameTypeSection2" style="display: none;">
+                                <!-- Content for 3 Players game type -->
+                                <br>
+                                <h2>Game Type: 3 Players</h2>
+                                <div id="ThreePlayers" class="mt-5">
+                                 
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Players Ready to Play</th>  
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TwoPlayerList">
+                                            <!-- users will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Add your content for 3 Players game type here -->
+                                <div id="playerList3"></div>
+                                <button onclick="StartGame()">Start Game</button>
+                                <div id="JoinGame">
+                                    <br>
+                                    <button id="joinGameButton" onclick="JoinGame()">Join Game</button>
+                                </div>
+                            </div>
+        
+                            <!-- 4 Players Game Section -->
+                            <div id="gameType4" class="gameTypeSection3" style="display: none;">
+                                <!-- Content for 4 Players game type -->
+                                <br>
+                                <h2>Game Type : 4 Players</h2>
+                                <div id="ThreePlayers" class="mt-5">
+                                   
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Players Ready to Play</th>                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody id="TwoPlayerList">
+                                            <!-- users will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Add your content for 4 Players game type here -->
+                                <div id="playerList2"></div>
+                                <button onclick="StartGame()">Start Game</button>
+                                <div id="JoinGame">
+                                    <br>
+                                    <button id="joinGameButton" onclick="JoinGame()">Join Game</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        <script>
+                            function selectGameType(numPlayers) {
+
+                                const usernameInput = document.getElementById('username');
+                                 const userlist = usernameInput.value;
+
+                                if(numPlayers==2){
+                                    document.querySelector(".gameTypeSection1").style.display ="block";
+                                    document.querySelector(".GameType").style.display ="none";
+                                    console.log("2 Players game selected!");
+                                    displayUsernames(userlist); 
+                                  
+                                }
+                                else if(numPlayers==3){
+                                    console.log("3 Players game selected!");
+                                    document.querySelector(".gameTypeSection2").style.display ="block";
+                                    document.querySelector(".GameType").style.display ="none";
+                                    displayUsernames(userlist); 
+                                }
+                                else if(numPlayers==4){
+                                    console.log("4 Players game selected!");
+                                    document.querySelector(".gameTypeSection3").style.display ="block";
+                                    document.querySelector(".GameType").style.display ="none";
+                                    displayUsernames(userlist); 
+                                }
+
+
+                                // Send the selected game type to the server
+                                     const gameTypeMessage = {
+                                     type: 'gameType',
+                                    numPlayers: numPlayers,
+                                    userlist: userlist
+                                      };
+                                    socket.send(JSON.stringify(gameTypeMessage));
+                                    }
+
+                                    function displayUsernames(userlist) {
+                                        
+                                        const twoPlayerList = document.getElementById('TwoPlayerList');
+                                            twoPlayerList.innerHTML = ''; // Clear the previous list
+
+                                            // Ensure usernames is an array before trying to iterate over it
+                                            if (Array.isArray(userlist)) {
+                                                userlist.forEach(userlist => {
+                                                    const listItem = document.createElement('li');
+                                                    listItem.textContent = userlist;
+                                                    twoPlayerList.appendChild(listItem);
+                                                });
+                                            } else {
+                                                // If usernames is not an array, display a single item
+                                                const listItem = document.createElement('li');
+                                                listItem.textContent = username;
+                                                twoPlayerList.appendChild(listItem);
+                                            }
+                                        }
+
+                        </script>
+
+                        
+
+                <div class ="gameSection" style ="display: none;">
                      <button onclick="StartGame()">StartGame</button>
 
                      <div id="JoinGame">
-                     <button id="joinGameButton" onclick="JoinGame()" style="display: none;">Join Game</button>
+                        <br>
+                     <button id="joinGameButton" onclick="JoinGame()" style= >Join Game</button>
+
                      </div>
 
                      </div>
 
                    </div>
                </div>
-
 
 
                </div>

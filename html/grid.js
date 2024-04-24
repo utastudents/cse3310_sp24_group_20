@@ -112,10 +112,6 @@ function displayLeaderboard(leaderboardData) {
     } else {
         leaderboardContainer.textContent = "No leaderboard data available.";
 
-    }
-
-
-    
-    
+    } 
 } 
 

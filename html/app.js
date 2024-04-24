@@ -2,8 +2,10 @@ const activeUsersList = document.getElementById("activeUsersList");
 const chatMessages = document.getElementById('chatbox');
 
 var serverUrl;
+
 serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
-const socket = new WebSocket(serverUrl); 
+
+socket = new WebSocket(serverUrl); 
 
 socket.onopen = function(event) {
     console.log("WebSocket connection established.");
@@ -49,7 +51,14 @@ socket.onmessage = function(event) {
         displayGameEndMessage(data.username);
     }
 
+    else if (data.type === "gameType") { // Handle the usernames message type
+        console.log("Received username:", data.username);
+        // Update the UI to display the list of usernames
+        displayUsernames(data.userlist);
+        
+    }
     };
+
 
     function displayGameEndMessage(message) {
 
@@ -114,25 +123,10 @@ socket.onmessage = function(event) {
         socket.send(JSON.stringify(joinGameMessage));
     }
 
-    function updateLeaderboardUI(leaderboard) {
-    console.log("Leaderboard data:", leaderboard); // Log the leaderboard data
-    leaderboardData = leaderboard;
-
-    const leaderboardElement = document.getElementById('leaderboardContainer');
-    leaderboardElement.innerHTML = ''; 
-
-    const players = leaderboard.players; // Access the players array from the leaderboard object
-
-    players.forEach((player, index) => { // Change `leaderboard.forEach` to `players.forEach`
-        const playerElement = document.createElement('div');
-        playerElement.textContent = `${index + 1}. ${player.username} - Score: ${player.score}`;
-        leaderboardElement.appendChild(playerElement);
-    });
-}
-
 function submitUsername() {
     
     const username = document.getElementById("username").value;
+    console.log("Username submitted:", username);
     if (username !== "") { 
         window.username = username;   
     socket.send(JSON.stringify({ type: "username", data: username }));
@@ -147,21 +141,6 @@ function submitUsername() {
     }
     //console.log(username);
 }
-
-
-function updateActiveUsers(activeUsers) {
-    console.log("Updating active users:", activeUsers);
-    activeUsersList.innerHTML = '';
-    activeUsers.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-        <td>${user.username}</td>
-        <td><span class="badge bg-success">Online</span></td>
-    `;
-    activeUsersList.appendChild(row);
-    });
-}
-
 
 
 function sendMessage() {
@@ -217,5 +196,3 @@ function broadcastStartGame() {
     };
     socket.send(JSON.stringify(startGameMessage));
 }
-
-
