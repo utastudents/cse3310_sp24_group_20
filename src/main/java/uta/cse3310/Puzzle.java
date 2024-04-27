@@ -14,6 +14,8 @@ public class Puzzle {
     private WordList wordList = new WordList();
     public ArrayList<String> words = wordList.getWordList();
     private Random rand = new Random(); 
+    private int fillerNum = 0;
+    private int validWords = 0;
 
     public Puzzle (int rows, int columns ) {
        this.rows = rows;
@@ -56,11 +58,17 @@ public class Puzzle {
             for(int j = 0; j < columns; j++) {  
                 if( wordSearchPuzzle[i][j] == '-') {
                     wordSearchPuzzle[i][j] = '-';//letters[rand.nextInt(letters.length)]; 
+                    fillerNum++; 
                 }
                 
             }
         }
     } 
+    
+    public int getFillerNum() {
+        return fillerNum;
+    }
+    
     public void placeWord(String word) {
         int startRow = rand.nextInt(rows);
         int startColumn = rand.nextInt(columns);
@@ -114,7 +122,12 @@ public class Puzzle {
                 wordSearchPuzzle[startRow - wordLength + 1 + i][startColumn - wordLength + 1 + i] = word.charAt(i);
             }
         }
+        validWords++;
     } 
+
+    public int getValidWords() {
+        return validWords;
+    }
 }
 
 
