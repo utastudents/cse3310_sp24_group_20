@@ -16,6 +16,7 @@ public class Puzzle {
     private Random rand = new Random(); 
     private int fillerNum = 0;
     private int validWords = 0;
+    private int foundWords = 0;
 
     public Puzzle (int rows, int columns ) {
        this.rows = rows;
@@ -127,6 +128,18 @@ public class Puzzle {
 
     public int getValidWords() {
         return validWords;
+    }
+
+    public void incrementFoundWords() {
+        foundWords++;
+    }
+
+    public int getFoundWords() {
+        return foundWords;
+    }
+
+    public int remainingWords() {
+        return validWords - foundWords;
     }
 }
 
