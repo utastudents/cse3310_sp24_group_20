@@ -372,6 +372,7 @@ private void broadcastUsernames(String userlist) {
        }
        System.out.println("Username: " + username + ", Word: " + word + ", Score: " + score);
        System.out.println("Total score for " + username + ": " + scoreboard.get(username));
+       puzzle.incrementFoundWords();
    } else {
        System.out.println("Word is not in the wordlist, no points awarded.");
    }
