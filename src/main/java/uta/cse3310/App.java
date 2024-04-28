@@ -85,7 +85,8 @@
    private int GameId = 0;
    private int connectionId = 0;
    private Instant startTime; 
-   private Puzzle puzzle;
+   private Puzzle puzzle; 
+   private int playerIdentifier = 0;
   
   private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 5 minutes
 
@@ -106,30 +107,34 @@
      
    }
  
-   private void startGameForAll() {
+   private void startGameForAll() { 
     startTime = Instant.now();
     long remainingTime = gameDuration.getSeconds();
-     for (WebSocket session : userSessions.values()) {
-         Game game = session.getAttachment();
-         if (game != null) {
-             game.startGame();
-             
-             char[][] puzzleGrid = game.getBoard(); 
-             Gson gson = new Gson();
-             String puzzleJson = gson.toJson(puzzleGrid);
-             session.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
-             System.out.println(puzzleJson);
-       
-             ArrayList<String> wordsFromList = game.wordList(); 
-             String wordListJson = gson.toJson(wordsFromList); 
-             session.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
-             System.out.println(wordListJson); 
- 
-             session.send("{\"type\": \"startTimer\", \"data\": " + remainingTime + "}");
+    Gson gson = new Gson();
 
-         }
-     }
-      // Start a timer task to update the remaining time every second
+    // Start the game and send initial game data to all clients
+    for (WebSocket session : userSessions.values()) {
+        Game game = session.getAttachment();
+        if (game != null && session.isOpen()) {
+            game.startGame();
+
+            
+            char[][] puzzleGrid = game.getBoard();
+            String puzzleJson = gson.toJson(puzzleGrid);
+            session.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  // Send puzzle grid to front-end
+            System.out.println(puzzleJson);
+
+            
+            ArrayList<String> wordsFromList = game.wordList(); 
+            String wordListJson = gson.toJson(wordsFromList); 
+            session.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); // Send WordList to front-end
+            System.out.println(wordListJson);
+
+            session.send("{\"type\": \"startTimer\", \"data\": " + remainingTime + "}"); // Send timer over to front end
+        }
+    }
+
+    // This section of code controls the time of the game. Its currently set to 8 minutes inorder to meet requriements.
     Timer timer = new Timer();
     timer.scheduleAtFixedRate(new TimerTask() {
         @Override
@@ -137,15 +142,20 @@
             long elapsedTime = Duration.between(startTime, Instant.now()).getSeconds();
             long remainingTime = gameDuration.getSeconds() - elapsedTime;
             if (remainingTime <= 0) {
-                timer.cancel(); // Stop the timer when the game ends
-                endGame(); // End the game
+                timer.cancel(); 
+                endGame(); 
             }
-            // Broadcast the updated remaining time to all clients
             for (WebSocket session : userSessions.values()) {
-                session.send("{\"type\": \"updateTimer\", \"data\": " + remainingTime + "}");
+                try {
+                    if (session.isOpen()) { 
+                        session.send("{\"type\": \"updateTimer\", \"data\": " + remainingTime + "}");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error sending timer update: " + e.getMessage());
+                }
             }
         }
-    }, 0, 1000); // Update the timer every second
+    }, 0, 1000); 
 }
 
  
@@ -173,15 +183,6 @@
  
    }
  
-   /*@Override
-   public void onClose(Session session) {
-       System.out.println("Client disconnected: " + session.getId());
-       players.remove(session); 
-       Game game = conn.getAttachment();
-       game = null;
-     
-   } */
- 
    public void onOpen(Session session) {
      System.out.println("Client connected: " + session.getId());
      
@@ -191,12 +192,10 @@
    public void onClose(WebSocket conn, int code, String reason, boolean remote) { 
        System.out.println(conn + " has closed"); 
        Game game = conn.getAttachment(); 
-       players.clear(); 
-       activeUsers.clear();
+       userSessions.remove(conn.getRemoteSocketAddress().toString()); 
        game = null;
-     
    }
- 
+   
    @Override
    public void onMessage(WebSocket conn, String message) {  
    System.out.println("Received message: " + message);
@@ -406,7 +405,8 @@ private void broadcastUsernames(String userlist) {
  
    private void handleLogin(WebSocket conn, String username) {
      if (!isUsernameTaken(username)) {
-       Player player = new Player(username);
+       Player player = new Player(username, playerIdentifier, 0, 0);
+       playerIdentifier++;
        activeUsers.add(player);
        Gson gson = new Gson();
        conn.send(gson.toJson(new Message("loginSuccess", "Login successful.")));

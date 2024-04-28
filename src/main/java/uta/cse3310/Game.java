@@ -66,18 +66,22 @@ public class Game {
     public Map<String, Integer> getUserScores() {
         return userScores;
     }
-public int getNumPlayers() {
+    public int getNumPlayers() {
         return numPlayers;
     }
-
-
     public void addUser(Player player) {
         players.add(player);
         numPlayers++;
     }
-
-    // Method to get the list of players in the game
     public List<Player> getPlayers() {
         return players;
+    } 
+    public String getPlayerUsername(int playerIdentifier) {
+        for (Player player : players) { 
+            if (player.getPlayerIdentifier() == playerIdentifier) { 
+                return player.getPlayerUsername(); 
+            }
+         }
+         return null; 
     }
 }
