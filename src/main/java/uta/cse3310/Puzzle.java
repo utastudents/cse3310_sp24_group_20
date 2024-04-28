@@ -141,6 +141,14 @@ public class Puzzle {
     public int remainingWords() {
         return validWords - foundWords;
     }
+
+    public void displayUser() {
+        // System.out.println("Density of the grid: " + );
+        System.out.println("Number of Words in the puzzle: " + validWords);
+        System.out.println("Number of filler words: " + fillerNum);
+        return;
+    }
+
 }
 
 
