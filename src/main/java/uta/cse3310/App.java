@@ -87,7 +87,7 @@
    private Instant startTime; 
    private Puzzle puzzle;
   
-  private Duration gameDuration = Duration.ofMinutes(1); // Set the game duration to 5 minutes
+  private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 5 minutes
 
  
    private static final Map<String, WebSocket> userSessions = new HashMap<>();
@@ -163,30 +163,6 @@
        broadcast(jsonString);
        game.startGame(); 
  
- 
-       
-       // char[][] puzzleGrid = game.getBoard(); 
-       // String puzzleJson = gson.toJson(puzzleGrid);
-       // conn.send("{\"type\": \"puzzle\", \"data\": " + puzzleJson + "}");  
-       // System.out.println(puzzleJson);
-       
-       // ArrayList<String> wordsFromList = game.wordList(); 
-       // String wordListJson = gson.toJson(wordsFromList); 
-       // conn.send("{\"type\": \"wordList\", \"data\": " + wordListJson + "}"); 
-       // System.out.println(wordListJson); 
- 
-     
-       /*
-       Player player1 = new Player("Testplayer 1", 0, 0, 0); 
-       Player player2 = new Player("Testplayer 2", 1, 0, 0);
-       Player player3 = new Player("Testplayer 3", 2, 0, 0);
-       Player player4 = new Player("Testplayer 4", 3, 0, 0); 
- 
-       players.add(player1);
-       players.add(player2);
-       players.add(player3);
-       players.add(player4); 
-        */
        Leaderboard leaderboard = new Leaderboard(players);
  
        String leaderboardJson = gson.toJson(leaderboard); 
@@ -197,13 +173,14 @@
  
    }
  
- 
- 
-   @OnClose
+   /*@Override
    public void onClose(Session session) {
-     System.out.println("Client disconnected: " + session.getId());
-     players.remove(session);
-   }
+       System.out.println("Client disconnected: " + session.getId());
+       players.remove(session); 
+       Game game = conn.getAttachment();
+       game = null;
+     
+   } */
  
    public void onOpen(Session session) {
      System.out.println("Client connected: " + session.getId());
@@ -213,7 +190,9 @@
    @Override
    public void onClose(WebSocket conn, int code, String reason, boolean remote) { 
        System.out.println(conn + " has closed"); 
-       Game game = conn.getAttachment();
+       Game game = conn.getAttachment(); 
+       players.clear(); 
+       activeUsers.clear();
        game = null;
      
    }
@@ -439,7 +418,7 @@ private void broadcastUsernames(String userlist) {
  
    private boolean isUsernameTaken(String username) {
  
-  return activeUsers.stream().anyMatch(player -> player.getPlayerUsername().equals(username));
+       return activeUsers.stream().anyMatch(player -> player.getPlayerUsername().equals(username));
  
    }
    
@@ -482,9 +461,6 @@ private void broadcastUsernames(String userlist) {
      
    }
    
- 
- 
- 
    public static void main(String[] args) {   
      String HttpPort = System.getenv("HTTP_PORT");
      int port = 9080;
@@ -510,17 +486,6 @@ private void broadcastUsernames(String userlist) {
      A.setReuseAddr(true);
      A.start();
      System.out.println("websocket Server started on port: " + port);
-       
- 
- 
-     /*String sep = "=".repeat(50);
-     
-     WordList wordList = new WordList();
-      
-     Puzzle puzzle = new Puzzle(50,50); 
-     puzzle.displayPuzzle();
-     System.out.println("\n" + sep + "\n"); 
-     wordList.displayWordList();
-     */
+  
    }
  }
