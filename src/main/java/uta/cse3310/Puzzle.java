@@ -17,13 +17,14 @@ public class Puzzle {
     private int fillerNum = 0;
     private int validWords = 0;
     private int foundWords = 0;
+    private int leftWords;
 
     public Puzzle (int rows, int columns ) {
        this.rows = rows;
        this.columns = columns; 
        this.wordSearchPuzzle = new char[rows][columns];
-       //initializeBoard();
-       //fillRandomLetters();
+       initializeBoard();
+       fillRandomLetters();
     } 
     public void initializeBoard() { 
         for(int i = 0; i < rows; i++) {
@@ -131,22 +132,34 @@ public class Puzzle {
     }
 
     public void incrementFoundWords() {
-        foundWords++;
+        if (wordSearchPuzzle != null) {
+            foundWords++;
+        } else {
+            System.err.println("Error: Puzzle object is not initialized.");
+        }
     }
+    
 
     public int getFoundWords() {
         return foundWords;
     }
 
     public int remainingWords() {
-        return validWords - foundWords;
+        leftWords = validWords - foundWords;
+        return leftWords;
     }
 
     public void displayUser() {
         // System.out.println("Density of the grid: " + );
-        System.out.println("Number of Words in the puzzle: " + validWords);
-        System.out.println("Number of filler words: " + fillerNum);
+        System.out.println("Number of valid Words in the puzzle: " + validWords);
+        System.out.println("Number of filler letters: " + fillerNum);
+        System.out.println("Number of found words:" + foundWords);
         return;
+    }
+    public void foundwords(){
+        System.out.println("Number of found words:" + foundWords);
+       // System.out.println("Number of remaining words:"+ leftWords);  
+
     }
 
 }

@@ -88,7 +88,7 @@
    private Puzzle puzzle; 
    private int playerIdentifier = 0;
   
-  private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 5 minutes
+  private Duration gameDuration = Duration.ofMinutes(1); // Set the game duration to 5 minutes
 
  
    private static final Map<String, WebSocket> userSessions = new HashMap<>();
@@ -96,11 +96,13 @@
  
    public App(int port) { 
       super(new InetSocketAddress(port)); 
+        // Initialize the puzzle with a default size
+        this.puzzle = new Puzzle(50, 50);
  
    }
+   
    public App(InetSocketAddress address) { 
      super(address);
-     
    }
    public App(int port, Draft_6455 draft) { 
       super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
@@ -350,7 +352,10 @@ private void broadcastUsernames(String userlist) {
        }
        System.out.println("Username: " + username + ", Word: " + word + ", Score: " + score);
        System.out.println("Total score for " + username + ": " + scoreboard.get(username));
-       //puzzle.incrementFoundWords();
+       
+       puzzle.incrementFoundWords();
+       puzzle.foundwords();
+
    } else {
        System.out.println("Word is not in the wordlist, no points awarded.");
    }
@@ -392,6 +397,8 @@ private void broadcastUsernames(String userlist) {
   Gson gson = new Gson();
   String endGameMessage = gson.toJson(new Message("gameEnd", "The game has ended.The winner is: " + winner.getPlayerUsername() + ".Thanks for playing!"));
   broadcast(endGameMessage);
+
+  puzzle.displayUser();
 }
 
  private void broadcastLeaderboard() {
