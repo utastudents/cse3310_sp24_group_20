@@ -23,8 +23,8 @@ public class Puzzle {
        this.rows = rows;
        this.columns = columns; 
        this.wordSearchPuzzle = new char[rows][columns];
-       initializeBoard();
-       fillRandomLetters();
+       //initializeBoard();
+       //fillRandomLetters();
     } 
     public void initializeBoard() { 
         for(int i = 0; i < rows; i++) {
@@ -160,7 +160,7 @@ public class Puzzle {
         System.out.println("Number of found words:" + foundWords);
        // System.out.println("Number of remaining words:"+ leftWords);  
 
-    }
+    } 
 
 }
 
