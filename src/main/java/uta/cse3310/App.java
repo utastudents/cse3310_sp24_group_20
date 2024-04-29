@@ -88,7 +88,7 @@
    private Puzzle puzzle; 
    private int playerIdentifier = 0;
   
-  private Duration gameDuration = Duration.ofMinutes(1); // Set the game duration to 5 minutes
+  private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 5 minutes
 
  
    private static final Map<String, WebSocket> userSessions = new HashMap<>();
