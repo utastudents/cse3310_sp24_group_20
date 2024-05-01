@@ -18,7 +18,7 @@ socket.onmessage = function(event) {
 
      
     if (data.type === 'version') {
-        document.getElementById("title").innerHTML = "TWSG GP20 GitHash: " + data.username; //Display commit hash to title. 
+        document.getElementById("title").innerHTML = "TWSG " + data.username; //Display commit hash to title. 
         console.log(data);
     }
     else if (data.type === "puzzle") {
