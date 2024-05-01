@@ -26,6 +26,7 @@ public class Puzzle {
        //initializeBoard();
        //fillRandomLetters();
     } 
+
     public void initializeBoard() { 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {
@@ -36,8 +37,6 @@ public class Puzzle {
             placeWord(word.toUpperCase());
         }
     } 
-    
-    
     
     public void displayPuzzle() {
         for(int i = 0; i < rows; i++) {
@@ -54,7 +53,6 @@ public class Puzzle {
         return words;
     }
 
-    
     public void fillRandomLetters() { 
         for(int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {  
@@ -62,7 +60,6 @@ public class Puzzle {
                     wordSearchPuzzle[i][j] = letters[rand.nextInt(letters.length)]; 
                     fillerNum++; 
                 }
-                
             }
         }
     } 
@@ -72,60 +69,69 @@ public class Puzzle {
     }
     
     public void placeWord(String word) {
-        int startRow = rand.nextInt(rows);
-        int startColumn = rand.nextInt(columns);
-        int direction = rand.nextInt(3);
-        int wordLength = word.length();
-        int endRow = startRow;
-        int endColumn = startColumn;
+        int maxAttempts = 100;  // dont wanna blow up profs server so we limit the num of attempts
+        for (int attempt = 0; attempt < maxAttempts; attempt++) {
+            int startRow = rand.nextInt(rows);
+            int startColumn = rand.nextInt(columns);
+            int direction = rand.nextInt(3); // direction can either be horizontal, vertical, or diagonal
+            int wordLength = word.length();
 
-        if (direction == 0) { 
-            endColumn += wordLength - 1;
-        } 
-        else if (direction == 1) { 
-            endRow += wordLength - 1;
-        } 
-        else { 
-            endRow += wordLength - 1;
-            endColumn += wordLength - 1;
-        }
-        if (endRow >= rows || endColumn >= columns) {
-            placeWord(word);
-            return;
-        }
-        for (int i = 0; i < wordLength; i++) {
-            char currentChar = word.charAt(i);
-            char existingChar = wordSearchPuzzle[startRow][startColumn];
-            if (existingChar != '-' && existingChar != currentChar) {
-                placeWord(word);
+            int endRow = calculateEndRow(startRow, direction, wordLength);
+            int endColumn = calculateEndColumn(startColumn, direction, wordLength);
+
+            if (isPlacementValid(startRow, endRow, startColumn, endColumn, word, direction)) {
+                placeCharacters(word, startRow, startColumn, direction);
+                validWords++;
                 return;
             }
-            if (direction == 0) { 
-                if (startColumn + 1 < columns) { 
-                    startColumn++;
-                } 
-            } 
-            else if (direction == 1) { 
-                if (startRow + 1 < rows) { 
-                    startRow++;
-                } 
-            } 
-            else if (startRow + 1 < rows && startColumn + 1 < columns) { 
-                startRow++;
-                startColumn++;
-            } 
         }
-        for (int i = 0; i < wordLength; i++) {
-            if (direction == 0) { 
-                wordSearchPuzzle[startRow][startColumn - wordLength + 1 + i] = word.charAt(i);
-            } else if (direction == 1) { 
-                wordSearchPuzzle[startRow - wordLength + 1 + i][startColumn] = word.charAt(i);
-            } else { 
-                wordSearchPuzzle[startRow - wordLength + 1 + i][startColumn - wordLength + 1 + i] = word.charAt(i);
+        System.out.println("Failed to place the word after " + maxAttempts + " attempts: " + word);
+    }
+    // Method checks Boundaries of the puzzle and prevevnts collisions an issue we were having on our previous iteration. Also incoporates new requirment with shared letters
+    public boolean isPlacementValid(int startRow, int endRow, int startColumn, int endColumn, String word, int direction) {
+        if (endRow >= rows || endColumn >= columns) {
+            return false;
+        }
+
+        for (int i = 0; i < word.length(); i++) {
+            int currentRow = startRow + (direction == 1 || direction == 2 ? i : 0);
+            int currentColumn = startColumn + (direction == 0 || direction == 2 ? i : 0);
+            char currentChar = word.charAt(i);
+            char existingChar = wordSearchPuzzle[currentRow][currentColumn];
+
+            if (existingChar != '-' && existingChar != currentChar) {
+                return false;
             }
         }
-        validWords++;
+        return true;
+    }
+    public void placeCharacters(String word, int startRow, int startColumn, int direction) {
+        for (int i = 0; i < word.length(); i++) {
+            int r = startRow + (direction == 1 || direction == 2 ? i : 0);
+            int c = startColumn + (direction == 0 || direction == 2 ? i : 0);
+            wordSearchPuzzle[r][c] = word.charAt(i);
+        }
     } 
+    // Checking the boundaries
+    public int calculateEndRow(int startRow, int direction, int wordLength) {
+        if (direction == 1) { 
+            return startRow + wordLength - 1;
+        } 
+        else if (direction == 2) {
+            return startRow + wordLength - 1;
+        }
+        return startRow; 
+    }
+
+    public int calculateEndColumn(int startColumn, int direction, int wordLength) {
+        if (direction == 0) { 
+            return startColumn + wordLength - 1;
+        } 
+        else if (direction == 2) { 
+            return startColumn + wordLength - 1;
+        }
+        return startColumn; 
+    }
 
     public int getValidWords() {
         return validWords;
