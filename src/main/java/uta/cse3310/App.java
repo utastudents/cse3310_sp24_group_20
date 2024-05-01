@@ -85,13 +85,13 @@ public class App extends WebSocketServer {
     private Instant startTime; 
     private Puzzle puzzle; 
     private int playerIdentifier = 0;
-    Gson gson = new Gson();
   
     private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 8 minutes
 
  
     private static final Map<String, WebSocket> userSessions = new HashMap<>(); 
-    private String startMessage = gson.toJson(System.getenv("VERSION"));
+    static String version = System.getenv("VERSION");
+    
     private Map<String, Integer> scoreboard = new HashMap<>(); 
  
     public App(int port) { 
@@ -165,14 +165,21 @@ public class App extends WebSocketServer {
    @Override
    public void onOpen(WebSocket conn, ClientHandshake handshake) {   
        System.out.println(conn + " Connected!!"); 
-       System.out.println(startMessage);
-       conn.send(startMessage);
+       Gson gson = new Gson(); 
+
+       //Obtain VERSION variable in order to print out the github hash on the title of the webpage. 
+       if (version == null) {
+           version = "default-version"; 
+       }
+       String versionMessage = gson.toJson(new Message("version", version));
+       System.out.println(versionMessage);
+       conn.send(versionMessage);
+
        userSessions.put(conn.getRemoteSocketAddress().toString(), conn);
        ServerEvent event = new ServerEvent();
        Game game = new Game(GameId + 1); 
        conn.setAttachment(game);
        event.gameId = game.gameIdentifier;
-       Gson gson = new Gson(); 
        String jsonString = gson.toJson(event);
        broadcast(jsonString);
        game.startGame(); 
@@ -496,4 +503,7 @@ public class App extends WebSocketServer {
      System.out.println("websocket Server started on port: " + port);
   
    }
- }
+ } 
+
+
+

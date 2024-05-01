@@ -13,11 +13,15 @@ socket.onopen = function(event) {
 
 socket.onmessage = function(event) {
     console.log("Message received from server:", event.data); // Log received message
-    const data = JSON.parse(event.data);
+    const data = JSON.parse(event.data); 
 
-    document.getElementById("title").innerHTML += data.eventData.version; 
-       
-    if (data.type === "puzzle") {
+
+    //document.getElementById("title").innerHTML += data.event.Data.version; 
+    if (data.type === 'version') {
+        document.getElementById("title").innerHTML = "Version: " + data.data; // Append version to the title
+        console.log(data);
+    }
+    else if (data.type === "puzzle") {
         displayPuzzle(data.data);
     } 
     else if (data.type === "wordList") {
