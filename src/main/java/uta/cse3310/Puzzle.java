@@ -87,7 +87,7 @@ public class Puzzle {
         }
         System.out.println("Failed to place the word after " + maxAttempts + " attempts: " + word);
     }
-    // Method checks Boundaries of the puzzle and prevevnts collisions an issue we were having on our previous iteration. Also incoporates new requirment with shared letters
+    // Method checks boundaries of the puzzle and prevevnts collisions an issue we were having on our previous iteration. Also incoporates new requirement with shared letters
     public boolean isPlacementValid(int startRow, int endRow, int startColumn, int endColumn, String word, int direction) {
         if (endRow >= rows || endColumn >= columns) {
             return false;
@@ -112,7 +112,7 @@ public class Puzzle {
             wordSearchPuzzle[r][c] = word.charAt(i);
         }
     } 
-    // Checking the boundaries
+    // For use in boundary checking
     public int calculateEndRow(int startRow, int direction, int wordLength) {
         if (direction == 1) { 
             return startRow + wordLength - 1;
