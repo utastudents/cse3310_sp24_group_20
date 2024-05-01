@@ -88,9 +88,8 @@ public class App extends WebSocketServer {
   
     private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 8 minutes
 
- 
     private static final Map<String, WebSocket> userSessions = new HashMap<>(); 
-    static String version = System.getenv("VERSION");
+    private static String version = System.getenv("VERSION");
     
     private Map<String, Integer> scoreboard = new HashMap<>(); 
  
@@ -168,9 +167,6 @@ public class App extends WebSocketServer {
        Gson gson = new Gson(); 
 
        //Obtain VERSION variable in order to print out the github hash on the title of the webpage. 
-       if (version == null) {
-           version = "default-version"; 
-       }
        String versionMessage = gson.toJson(new Message("version", version));
        System.out.println(versionMessage);
        conn.send(versionMessage);

@@ -18,7 +18,7 @@ socket.onmessage = function(event) {
 
     //document.getElementById("title").innerHTML += data.event.Data.version; 
     if (data.type === 'version') {
-        document.getElementById("title").innerHTML = "Version: " + data.data; // Append version to the title
+        document.getElementById("title").innerHTML = "Version: " + data.username; // Append version to the title
         console.log(data);
     }
     else if (data.type === "puzzle") {
