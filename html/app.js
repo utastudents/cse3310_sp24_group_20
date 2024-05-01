@@ -15,7 +15,8 @@ socket.onmessage = function(event) {
     console.log("Message received from server:", event.data); // Log received message
     const data = JSON.parse(event.data);
 
-    
+    document.getElementById("title").innerHTML += data.eventData.version; 
+       
     if (data.type === "puzzle") {
         displayPuzzle(data.data);
     } 

@@ -85,12 +85,14 @@ public class App extends WebSocketServer {
     private Instant startTime; 
     private Puzzle puzzle; 
     private int playerIdentifier = 0;
+    Gson gson = new Gson();
   
     private Duration gameDuration = Duration.ofMinutes(8); // Set the game duration to 8 minutes
 
  
-    private static final Map<String, WebSocket> userSessions = new HashMap<>();
-    private Map<String, Integer> scoreboard = new HashMap<>();
+    private static final Map<String, WebSocket> userSessions = new HashMap<>(); 
+    private String startMessage = gson.toJson(System.getenv("VERSION"));
+    private Map<String, Integer> scoreboard = new HashMap<>(); 
  
     public App(int port) { 
         super(new InetSocketAddress(port)); 
@@ -162,7 +164,9 @@ public class App extends WebSocketServer {
  
    @Override
    public void onOpen(WebSocket conn, ClientHandshake handshake) {   
-       System.out.println(conn + " Connected!!");
+       System.out.println(conn + " Connected!!"); 
+       System.out.println(startMessage);
+       conn.send(startMessage);
        userSessions.put(conn.getRemoteSocketAddress().toString(), conn);
        ServerEvent event = new ServerEvent();
        Game game = new Game(GameId + 1); 
