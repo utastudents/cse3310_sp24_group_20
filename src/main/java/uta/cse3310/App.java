@@ -37,12 +37,7 @@
 
  package uta.cse3310;
 
- import java.io.BufferedReader;
- import java.io.FileReader;
- import java.io.IOException;
- import java.io.InputStreamReader;
  import java.net.InetSocketAddress;
- import java.net.UnknownHostException;
  import java.nio.ByteBuffer;
  import java.util.Collections;
  import java.util.HashMap;
@@ -52,8 +47,6 @@
  import java.util.Set;
  import java.util.HashSet;
  
- import javax.swing.text.html.HTMLDocument.Iterator;
- import javax.websocket.OnClose;
  import javax.websocket.Session;
  import org.java_websocket.WebSocket;
  import org.java_websocket.drafts.Draft;
@@ -67,7 +60,6 @@
  import java.time.Duration;
  
  import com.google.gson.Gson;
- import com.google.gson.GsonBuilder;
  import com.google.gson.JsonObject;
  import com.google.gson.JsonSyntaxException;
 
@@ -106,6 +98,9 @@ public class App extends WebSocketServer {
         super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
      
    }
+   
+   
+   
  
    private void startGameForAll() { 
        startTime = Instant.now();
@@ -304,7 +299,7 @@ public class App extends WebSocketServer {
         }
     }
  
-    private void handleUsername(WebSocket conn, String username) {
+    public void handleUsername(WebSocket conn, String username) {
         Player player = new Player(username, connectionId++, 0, 0); 
         players.add(player); 
         activeUsers.add(player);
@@ -319,7 +314,7 @@ public class App extends WebSocketServer {
     }
  
  
-   private void handleChatMessage(WebSocket conn, JsonObject messageJson) {
+   public void handleChatMessage(WebSocket conn, JsonObject messageJson) {
        String username;
        if (messageJson.has("username") && messageJson.get("username").isJsonPrimitive()) {
            username = messageJson.get("username").getAsString();
@@ -338,7 +333,7 @@ public class App extends WebSocketServer {
        }
    }
  
-   private void handleWordCheck(WebSocket conn, JsonObject messageJson) {
+   public void handleWordCheck(WebSocket conn, JsonObject messageJson) {
        Game game = conn.getAttachment();
        String username = messageJson.get("username").getAsString(); 
        String word = messageJson.get("word").getAsString(); 
